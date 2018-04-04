@@ -3,6 +3,7 @@ const arrayOfPossibleSymbols = ['fa-diamond', 'fa-paper-plane-o', 'fa-anchor', '
 const numOfCards = 16;
 // ------ Selectors ------ //
 cardDeck = document.querySelector('.deck');
+restartButton = document.querySelector('.restart');
 
 // ------ Functions ------ //
 // Create a new card deck array from the given array of possible symbols
@@ -78,3 +79,6 @@ function shuffle(array) {
 updateHTMLWithNewCardDeck(numOfCards);
 
 // ------ Events ------ //
+// When the user clicks the restart button,
+// update the card deck HTML with a new card deck
+restartButton.addEventListener('click', updateHTMLWithNewCardDeck.bind(null, numOfCards));
