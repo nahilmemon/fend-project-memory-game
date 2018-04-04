@@ -1,9 +1,10 @@
 // ------ Global Variables ------ //
 const arrayOfPossibleSymbols = ['fa-diamond', 'fa-paper-plane-o', 'fa-anchor', 'fa-bolt', 'fa-cube', 'fa-leaf', 'fa-bicycle', 'fa-bomb'];
 const numOfCards = 16;
-// ------ Selectors ------ //
-cardDeck = document.querySelector('.deck');
-restartButton = document.querySelector('.restart');
+
+// --- Selectors --- //
+const cardDeck = document.querySelector('.deck');
+const restartButton = document.querySelector('.restart');
 
 // ------ Functions ------ //
 // Create a new card deck array from the given array of possible symbols
