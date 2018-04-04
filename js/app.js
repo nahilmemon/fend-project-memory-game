@@ -75,6 +75,11 @@ function shuffle(array) {
   return array;
 }
 
+// Reveal the given card input
+function revealCard(cardElement) {
+  cardElement.classList.add('open', 'show');
+}
+
 // ------ Initialization ------ //
 // Add a new card deck to the HTML
 updateHTMLWithNewCardDeck(numOfCards);
@@ -83,3 +88,17 @@ updateHTMLWithNewCardDeck(numOfCards);
 // When the user clicks the restart button,
 // update the card deck HTML with a new card deck
 restartButton.addEventListener('click', updateHTMLWithNewCardDeck.bind(null, numOfCards));
+
+// When a card is clicked,
+// reveal this card and check if it matches any previously selected cards.
+// Otherwise hide the selected cards.
+cardDeck.addEventListener('click', function (event) {
+  // Save the selected target
+  const clickedCard = event.target;
+  // Make sure that the selected targest was actually a card li
+  // and not the deck ul
+  if (clickedCard.nodeName.toUpperCase() == 'LI') {
+    // Display the selected card's symbol
+    revealCard(clickedCard);
+  }
+});
