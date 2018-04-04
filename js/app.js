@@ -2,6 +2,7 @@
 const arrayOfPossibleSymbols = ['fa-diamond', 'fa-paper-plane-o', 'fa-anchor', 'fa-bolt', 'fa-cube', 'fa-leaf', 'fa-bicycle', 'fa-bomb'];
 const numOfCards = 16;
 let arrayOfOpenedCards = [];
+let cardTimer;
 
 // --- Selectors --- //
 const cardDeck = document.querySelector('.deck');
@@ -97,6 +98,17 @@ function lockMatchedCards(cardElement1, cardElement2, arrayOfSelectedCards) {
   arrayOfSelectedCards.pop();
 }
 
+// Given two card element inputs,
+// hide these cards and remove these cards from the array of opened cards
+function hideAndRemoveOpenedCards(cardElement1, cardElement2, arrayOfSelectedCards) {
+  // Hide the given cards
+  cardElement1.classList.remove('open', 'show');
+  cardElement2.classList.remove('open', 'show');
+  // Remove these cards from the array of opened cards
+  arrayOfSelectedCards.pop();
+  arrayOfSelectedCards.pop();
+}
+
 // ------ Initialization ------ //
 // Add a new card deck to the HTML
 updateHTMLWithNewCardDeck(numOfCards);
@@ -116,6 +128,15 @@ cardDeck.addEventListener('click', function (event) {
   // and not the deck ul
   // Also make sure that the clicked card hasn't already been matched
   if (clickedCard.nodeName.toUpperCase() == 'LI' && clickedCard.classList.contains('match') == false) {
+    // If 2 cards have already been clicked,
+    // then hide and remove the previously opened cards
+    if (arrayOfOpenedCards.length == 2) {
+      // clear out the card timer for hiding and removing the last two cards
+      clearTimeout(cardTimer);
+      // hide and remove the first two cards in the array of opened cards
+      hideAndRemoveOpenedCards(arrayOfOpenedCards[0], arrayOfOpenedCards[1], arrayOfOpenedCards);
+    }
+
     // Reveal the currently selected card and add it to the array of opened cards
     // if the array of opened cards is empty OR
     // if the array is not empty AND
@@ -134,6 +155,14 @@ cardDeck.addEventListener('click', function (event) {
       // then lock the matched cards
       if (clickedCard.innerHTML == arrayOfOpenedCards[0].innerHTML) {
         lockMatchedCards(clickedCard, arrayOfOpenedCards[0], arrayOfOpenedCards);
+      }
+      // Otherwise, if there is no match,
+      // then hide and remove these cards from the array of opened cards
+      // after a short delay
+      else {
+        cardTimer = setTimeout(function() {
+          hideAndRemoveOpenedCards(clickedCard, arrayOfOpenedCards[0], arrayOfOpenedCards)
+        }, 1000);
       }
     }
   }
