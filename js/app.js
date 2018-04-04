@@ -1,6 +1,7 @@
 // ------ Global Variables ------ //
 const arrayOfPossibleSymbols = ['fa-diamond', 'fa-paper-plane-o', 'fa-anchor', 'fa-bolt', 'fa-cube', 'fa-leaf', 'fa-bicycle', 'fa-bomb'];
 const numOfCards = 16;
+let arrayOfOpenedCards = [];
 
 // --- Selectors --- //
 const cardDeck = document.querySelector('.deck');
@@ -80,6 +81,11 @@ function revealCard(cardElement) {
   cardElement.classList.add('open', 'show');
 }
 
+// Add given card input to the array of opened cards
+function addCardToArrayOfOpenedCards(cardElement, arrayOfSelectedCards) {
+  arrayOfSelectedCards.push(cardElement);
+}
+
 // ------ Initialization ------ //
 // Add a new card deck to the HTML
 updateHTMLWithNewCardDeck(numOfCards);
@@ -100,5 +106,7 @@ cardDeck.addEventListener('click', function (event) {
   if (clickedCard.nodeName.toUpperCase() == 'LI') {
     // Display the selected card's symbol
     revealCard(clickedCard);
+    // Add the selected card to the array of opened cards
+    addCardToArrayOfOpenedCards(clickedCard, arrayOfOpenedCards);
   }
 });
