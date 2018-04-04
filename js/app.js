@@ -86,6 +86,17 @@ function addCardToArrayOfOpenedCards(cardElement, arrayOfSelectedCards) {
   arrayOfSelectedCards.push(cardElement);
 }
 
+// Lock given cards by showing that they have been matched and
+// removing them from the array of opened cards
+function lockMatchedCards(cardElement1, cardElement2, arrayOfSelectedCards) {
+  // Indicate that the given cards have been matched
+  cardElement1.classList.add('match');
+  cardElement2.classList.add('match');
+  // Remove these cards from the array of opened cards
+  arrayOfSelectedCards.pop();
+  arrayOfSelectedCards.pop();
+}
+
 // ------ Initialization ------ //
 // Add a new card deck to the HTML
 updateHTMLWithNewCardDeck(numOfCards);
@@ -103,10 +114,27 @@ cardDeck.addEventListener('click', function (event) {
   const clickedCard = event.target;
   // Make sure that the selected targest was actually a card li
   // and not the deck ul
-  if (clickedCard.nodeName.toUpperCase() == 'LI') {
-    // Display the selected card's symbol
-    revealCard(clickedCard);
-    // Add the selected card to the array of opened cards
-    addCardToArrayOfOpenedCards(clickedCard, arrayOfOpenedCards);
+  // Also make sure that the clicked card hasn't already been matched
+  if (clickedCard.nodeName.toUpperCase() == 'LI' && clickedCard.classList.contains('match') == false) {
+    // Reveal the currently selected card and add it to the array of opened cards
+    // if the array of opened cards is empty OR
+    // if the array is not empty AND
+    // the previously selected cards is not the currently selected card
+    if (arrayOfOpenedCards.length == 0 || clickedCard != arrayOfOpenedCards[0]) {
+     // Display the selected card's symbol
+      revealCard(clickedCard);
+      // Add the selected card to the array of opened cards
+      addCardToArrayOfOpenedCards(clickedCard, arrayOfOpenedCards);
+    }
+
+    // If the arrray of opened cards already has another card in it,
+    // then check if the clicked card matches the other card in the array
+    if (arrayOfOpenedCards.length > 1) {
+      // If the two cards match,
+      // then lock the matched cards
+      if (clickedCard.innerHTML == arrayOfOpenedCards[0].innerHTML) {
+        lockMatchedCards(clickedCard, arrayOfOpenedCards[0], arrayOfOpenedCards);
+      }
+    }
   }
 });
