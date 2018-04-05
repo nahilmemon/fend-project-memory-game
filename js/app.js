@@ -3,10 +3,12 @@ const arrayOfPossibleSymbols = ['fa-diamond', 'fa-paper-plane-o', 'fa-anchor', '
 const numOfCards = 16;
 let arrayOfOpenedCards = [];
 let cardTimer;
+let movesCounter = 0;
 
 // --- Selectors --- //
 const cardDeck = document.querySelector('.deck');
 const restartButton = document.querySelector('.restart');
+const movesCounterSpan = document.querySelector('.moves');
 
 // ------ Functions ------ //
 // Create a new card deck array from the given array of possible symbols
@@ -109,9 +111,25 @@ function hideAndRemoveOpenedCards(cardElement1, cardElement2, arrayOfSelectedCar
   arrayOfSelectedCards.pop();
 }
 
+// Update the number of moves counter
+function updateMovesCounter(numOfMovesCounter, movesHTMLSelector) {
+  numOfMovesCounter++;
+  movesHTMLSelector.innerHTML = numOfMovesCounter;
+  return numOfMovesCounter;
+}
+
+// Reset the number of moves counter
+function resetMovesCounter(numOfMovesCounter, movesHTMLSelector) {
+  numOfMovesCounter = 0;
+  movesHTMLSelector.innerHTML = numOfMovesCounter;
+  return numOfMovesCounter;
+}
+
 // Restart the game by creating a new deck of cards and resetting all
 // global variables
 function restartGame() {
+  // Reset the number of moves counter
+  movesCounter = resetMovesCounter(movesCounter, movesCounterSpan)
   // Clear the card timer
   clearTimeout(cardTimer);
   // Empty the array of opened cards
@@ -162,6 +180,8 @@ cardDeck.addEventListener('click', function (event) {
     // If the arrray of opened cards already has another card in it,
     // then check if the clicked card matches the other card in the array
     if (arrayOfOpenedCards.length > 1) {
+      // Update the number of moves counter
+      movesCounter = updateMovesCounter(movesCounter, movesCounterSpan);
       // If the two cards match,
       // then lock the matched cards
       if (clickedCard.innerHTML == arrayOfOpenedCards[0].innerHTML) {
