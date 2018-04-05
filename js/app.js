@@ -8,12 +8,16 @@ const gameTimeLimit = 10000; // in units of ms
 let startTime;
 let gameHasBegun = false;
 let countdownTimer;
+let starBoundaryArray = [];
+// Create a document fragment to store the stars removed from the star list
+const starDocFragment = document.createDocumentFragment();
 
 // --- Selectors --- //
 const cardDeck = document.querySelector('.deck');
 const restartButton = document.querySelector('.restart');
 const movesCounterSpan = document.querySelector('.moves');
 const countdownTimerSpan = document.querySelector('.countdown-timer');
+const starList = document.querySelector('.stars');
 
 // ------ Functions ------ //
 // Create a new card deck array from the given array of possible symbols
@@ -130,6 +134,50 @@ function resetMovesCounter(numOfMovesCounter, movesHTMLSelector) {
   return numOfMovesCounter;
 }
 
+// Generate the star boundaries to compare with the moves counter
+function generateStarBoundaries(boundariesArray, sizeOfCardDeck, arrayOfAllSymbols) {
+  // Figure out the number of pairs for the given card deck size
+  const numOfPairs = sizeOfCardDeck/2;
+  // Make sure that numOfPairs is a reasonable number
+  if (numOfPairs < 2) {
+    // Should have at least two pairs
+    numOfPairs = 2;
+  } else if (numOfPairs > arrayOfAllSymbols.length) {
+    // Should have no more pairs than what is available to choose from
+    numOfPairs = arrayOfAllSymbols.length;
+  }
+  // Generate each star boundary based on the number of pairs
+  boundariesArray[0] = Math.round(numOfPairs*1.25 + 1);
+  boundariesArray[1] = Math.round(numOfPairs*1.625 + 1);
+  boundariesArray[2] = Math.round(numOfPairs*2 + 1);
+  return boundariesArray;
+}
+
+// Remove a star from the HTML
+function removeAStar(listOfStars, starFrag) {
+  // Delete the first star li element from the star ul list
+  const starChild = listOfStars.removeChild(listOfStars.firstElementChild);
+  // Add this star li child into the star document fragment
+  starFrag.appendChild(starChild);
+}
+
+// Remove a star from the star list whenever the moves counter hits any of the
+// star boundaries
+function updateStarList(boundariesArray, numOfMoves, listOfStars, starFrag) {
+  for (let i=0; i<boundariesArray.length; i++) {
+    if (numOfMoves == boundariesArray[i]) {
+      removeAStar(listOfStars, starFrag);
+    }
+  }
+}
+
+// Reset the star list by adding all the stars in the star document fragment
+// into the star list
+function resetStarList(listOfStars, starFrag) {
+  // Add star document fragment into the star list
+  listOfStars.appendChild(starFrag);
+}
+
 // Get the time at which the game started
 function getStartTime() {
   const timeGameStarted = performance.now();
@@ -159,7 +207,11 @@ function restartGame() {
   // Reset the game has begun boolean
   gameHasBegun = false;
   // Reset the number of moves counter
-  movesCounter = resetMovesCounter(movesCounter, movesCounterSpan)
+  movesCounter = resetMovesCounter(movesCounter, movesCounterSpan);
+  // Reset the star list
+  resetStarList(starList, starDocFragment);
+  // Regenerate the star boundaries array
+  generateStarBoundaries(starBoundaryArray, numOfCards, arrayOfPossibleSymbols);
   // Clear the card timer
   clearTimeout(cardTimer);
   // Clear the game countdown timer
@@ -227,6 +279,8 @@ cardDeck.addEventListener('click', function (event) {
     if (arrayOfOpenedCards.length > 1) {
       // Update the number of moves counter
       movesCounter = updateMovesCounter(movesCounter, movesCounterSpan);
+      // Update the star list
+      updateStarList(starBoundaryArray, movesCounter, starList, starDocFragment);
       // If the two cards match,
       // then lock the matched cards
       if (clickedCard.innerHTML == arrayOfOpenedCards[0].innerHTML) {
