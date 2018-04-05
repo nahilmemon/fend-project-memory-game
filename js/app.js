@@ -4,11 +4,15 @@ const numOfCards = 16;
 let arrayOfOpenedCards = [];
 let cardTimer;
 let movesCounter = 0;
+const gameTimeLimit = 10000; // in units of ms
+let startTime;
+let gameHasBegun = false;
 
 // --- Selectors --- //
 const cardDeck = document.querySelector('.deck');
 const restartButton = document.querySelector('.restart');
 const movesCounterSpan = document.querySelector('.moves');
+const countDownTimerSpan = document.querySelector('.countdown-timer');
 
 // ------ Functions ------ //
 // Create a new card deck array from the given array of possible symbols
@@ -125,13 +129,43 @@ function resetMovesCounter(numOfMovesCounter, movesHTMLSelector) {
   return numOfMovesCounter;
 }
 
+// Get the time at which the game started
+function getStartTime() {
+  const timeGameStarted = new Date();
+  return timeGameStarted;
+}
+
+// Get the amount of time that has elapsed since the start of the game
+function getTimeElapsed(timeGameStarted) {
+  const currentTime = new Date();
+  const elapsedTimeDuration = currentTime - timeGameStarted;
+  return elapsedTimeDuration;
+}
+
+// Get the amount of time left to play the game
+function getTimeLeft(elapsedTimeDuration) {
+  timeRemaining = gameTimeLimit - elapsedTimeDuration;
+  return timeRemaining;
+}
+
+// Update the countdown timer in the HTML
+function updateCountDownTimer(timeGameStarted) {
+  const elapsedTimeDuration = getTimeElapsed(timeGameStarted);
+  const timeRemaining = getTimeLeft(elapsedTimeDuration);
+  countDownTimerSpan.innerHTML = Math.round(timeRemaining/1000);
+}
+
 // Restart the game by creating a new deck of cards and resetting all
 // global variables
 function restartGame() {
+  // Reset the game has begun boolean
+  gameHasBegun = false;
   // Reset the number of moves counter
   movesCounter = resetMovesCounter(movesCounter, movesCounterSpan)
   // Clear the card timer
   clearTimeout(cardTimer);
+  // Clear the game countdown timer
+  clearInterval(countDownTimer);
   // Empty the array of opened cards
   let arrayOfOpenedCards = [];
   // Create a new deck of cards and add this to the HTML
@@ -157,6 +191,17 @@ cardDeck.addEventListener('click', function (event) {
   // and not the deck ul
   // Also make sure that the clicked card hasn't already been matched
   if (clickedCard.nodeName.toUpperCase() == 'LI' && clickedCard.classList.contains('match') == false) {
+    // If the game has not yet begun, then change this status
+    if (gameHasBegun == false) {
+      gameHasBegun = true;
+      // Get the time at which the game started
+      startTime = getStartTime();
+      // Start the countdown timer
+      const countDownTimer = setInterval(function() {
+        updateCountDownTimer(startTime);
+      }, 1000);
+    }
+
     // If 2 cards have already been clicked,
     // then hide and remove the previously opened cards
     if (arrayOfOpenedCards.length == 2) {
