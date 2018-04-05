@@ -109,6 +109,17 @@ function hideAndRemoveOpenedCards(cardElement1, cardElement2, arrayOfSelectedCar
   arrayOfSelectedCards.pop();
 }
 
+// Restart the game by creating a new deck of cards and resetting all
+// global variables
+function restartGame() {
+  // Clear the card timer
+  clearTimeout(cardTimer);
+  // Empty the array of opened cards
+  let arrayOfOpenedCards = [];
+  // Create a new deck of cards and add this to the HTML
+  updateHTMLWithNewCardDeck(numOfCards);
+}
+
 // ------ Initialization ------ //
 // Add a new card deck to the HTML
 updateHTMLWithNewCardDeck(numOfCards);
@@ -116,7 +127,7 @@ updateHTMLWithNewCardDeck(numOfCards);
 // ------ Events ------ //
 // When the user clicks the restart button,
 // update the card deck HTML with a new card deck
-restartButton.addEventListener('click', updateHTMLWithNewCardDeck.bind(null, numOfCards));
+restartButton.addEventListener('click', restartGame);
 
 // When a card is clicked,
 // reveal this card and check if it matches any previously selected cards.
