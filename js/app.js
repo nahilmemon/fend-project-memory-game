@@ -131,27 +131,19 @@ function resetMovesCounter(numOfMovesCounter, movesHTMLSelector) {
 
 // Get the time at which the game started
 function getStartTime() {
-  const timeGameStarted = new Date();
+  const timeGameStarted = performance.now();
   return timeGameStarted;
 }
 
-// Get the amount of time that has elapsed since the start of the game
-function getTimeElapsed(timeGameStarted) {
-  const currentTime = new Date();
-  const elapsedTimeDuration = currentTime - timeGameStarted;
-  return elapsedTimeDuration;
-}
-
-// Get the amount of time left to play the game
-function getTimeLeft(elapsedTimeDuration) {
-  timeRemaining = gameTimeLimit - elapsedTimeDuration;
-  return timeRemaining;
-}
-
-// Update the countdown timer in the HTML
+// Update the countdown timer and insert this into the HTML
 function updateCountDownTimer(timeGameStarted) {
-  const elapsedTimeDuration = getTimeElapsed(timeGameStarted);
-  const timeRemaining = getTimeLeft(elapsedTimeDuration);
+  // Get the current time
+  const currentTime = performance.now();
+  // Get the time elapsed since the game began
+  const timeElpased = currentTime - timeGameStarted;
+  // Get the amount of time remaining to play the game
+  const timeRemaining = gameTimeLimit - timeElpased;
+  // Update the HTML with the amount of time remaining
   countDownTimerSpan.innerHTML = Math.round(timeRemaining/1000);
 }
 
