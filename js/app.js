@@ -225,8 +225,8 @@ function restartGame() {
 }
 
 // ------ Initialization ------ //
-// Add a new card deck to the HTML
-updateHTMLWithNewCardDeck(numOfCards);
+// Reset all game parameters and generate a new card deck
+restartGame();
 
 // ------ Events ------ //
 // When the user clicks the restart button,
