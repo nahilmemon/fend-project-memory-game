@@ -7,12 +7,13 @@ let movesCounter = 0;
 const gameTimeLimit = 10000; // in units of ms
 let startTime;
 let gameHasBegun = false;
+let countdownTimer;
 
 // --- Selectors --- //
 const cardDeck = document.querySelector('.deck');
 const restartButton = document.querySelector('.restart');
 const movesCounterSpan = document.querySelector('.moves');
-const countDownTimerSpan = document.querySelector('.countdown-timer');
+const countdownTimerSpan = document.querySelector('.countdown-timer');
 
 // ------ Functions ------ //
 // Create a new card deck array from the given array of possible symbols
@@ -136,15 +137,20 @@ function getStartTime() {
 }
 
 // Update the countdown timer and insert this into the HTML
-function updateCountDownTimer(timeGameStarted) {
+function updateCountdownTimer(timeGameStarted) {
   // Get the current time
   const currentTime = performance.now();
   // Get the time elapsed since the game began
-  const timeElpased = currentTime - timeGameStarted;
+  const timeElapsed = currentTime - timeGameStarted;
   // Get the amount of time remaining to play the game
-  const timeRemaining = gameTimeLimit - timeElpased;
+  const timeRemaining = gameTimeLimit - timeElapsed;
   // Update the HTML with the amount of time remaining
-  countDownTimerSpan.innerHTML = Math.round(timeRemaining/1000);
+  countdownTimerSpan.innerHTML = Math.round(timeRemaining/1000);
+}
+
+// Reset the countdown timer in the HTML
+function resetCountdownTimer(countdownBeginningTime) {
+  countdownTimerSpan.innerHTML = Math.round(countdownBeginningTime/1000);
 }
 
 // Restart the game by creating a new deck of cards and resetting all
@@ -157,7 +163,9 @@ function restartGame() {
   // Clear the card timer
   clearTimeout(cardTimer);
   // Clear the game countdown timer
-  clearInterval(countDownTimer);
+  clearInterval(countdownTimer);
+  // Reset the countdown timer in the HTML
+  resetCountdownTimer(gameTimeLimit);
   // Empty the array of opened cards
   let arrayOfOpenedCards = [];
   // Create a new deck of cards and add this to the HTML
@@ -189,8 +197,8 @@ cardDeck.addEventListener('click', function (event) {
       // Get the time at which the game started
       startTime = getStartTime();
       // Start the countdown timer
-      const countDownTimer = setInterval(function() {
-        updateCountDownTimer(startTime);
+      countdownTimer = setInterval(function() {
+        updateCountdownTimer(startTime);
       }, 1000);
     }
 
