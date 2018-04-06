@@ -4,13 +4,16 @@ const numOfCards = 16;
 let arrayOfOpenedCards = [];
 let cardTimer;
 let movesCounter = 0;
-const gameTimeLimit = 10000; // in units of ms
+const gameTimeLimit = 60000; // in units of ms
 let startTime;
 let gameHasBegun = false;
 let countdownTimer;
 let starBoundaryArray = [];
 // Create a document fragment to store the stars removed from the star list
 const starDocFragment = document.createDocumentFragment();
+let gameOver = false;
+let gameWon = false;
+let numOfMatchesMade = 0;
 
 // --- Selectors --- //
 const cardDeck = document.querySelector('.deck');
@@ -194,11 +197,41 @@ function updateCountdownTimer(timeGameStarted) {
   const timeRemaining = gameTimeLimit - timeElapsed;
   // Update the HTML with the amount of time remaining
   countdownTimerSpan.innerHTML = Math.round(timeRemaining/1000);
+  // Check if time ran out or if the game has finished
+  isTheGameOverAndWon(timeRemaining);
 }
 
 // Reset the countdown timer in the HTML
 function resetCountdownTimer(countdownBeginningTime) {
   countdownTimerSpan.innerHTML = Math.round(countdownBeginningTime/1000);
+}
+
+// Figure out if the game is over yet and if it has been won or not
+function isTheGameOverAndWon(timeRemaining) {
+  if ((timeRemaining < 0 || numOfMatchesMade == numOfCards/2) && gameOver == false) {
+    // Update the game over status
+    gameOver = true;
+    // Clear the card timer
+    clearTimeout(cardTimer);
+    // Clear the game countdown timer
+    clearInterval(countdownTimer);
+    // If the user matched all the cards before the timer ran out,
+    // then alert him/her that he/she won the game
+    if (numOfMatchesMade == numOfCards/2) {
+      // Update the game won status
+      gameWon = true;
+      // Alert the user that the game was won
+      alert('You won!');
+    }
+    // Else if the timer ran out before all the matches were made,
+    // then alert the user that he/she lost the game
+    else {
+      // Update the game won status
+      gameWon = false;
+      // Alert the user that the game was lost
+      alert('You lost!');
+    }
+  }
 }
 
 // Restart the game by creating a new deck of cards and resetting all
@@ -218,6 +251,10 @@ function restartGame() {
   clearInterval(countdownTimer);
   // Reset the countdown timer in the HTML
   resetCountdownTimer(gameTimeLimit);
+  // Reset the game state statuses
+  gameOver = false;
+  gameWon = false;
+  numOfMatchesMade = 0;
   // Empty the array of opened cards
   let arrayOfOpenedCards = [];
   // Create a new deck of cards and add this to the HTML
@@ -242,7 +279,7 @@ cardDeck.addEventListener('click', function (event) {
   // Make sure that the selected targest was actually a card li
   // and not the deck ul
   // Also make sure that the clicked card hasn't already been matched
-  if (clickedCard.nodeName.toUpperCase() == 'LI' && clickedCard.classList.contains('match') == false) {
+  if (clickedCard.nodeName.toUpperCase() == 'LI' && clickedCard.classList.contains('match') == false && gameOver == false) {
     // If the game has not yet begun, then change this status
     if (gameHasBegun == false) {
       gameHasBegun = true;
@@ -285,6 +322,7 @@ cardDeck.addEventListener('click', function (event) {
       // then lock the matched cards
       if (clickedCard.innerHTML == arrayOfOpenedCards[0].innerHTML) {
         lockMatchedCards(clickedCard, arrayOfOpenedCards[0], arrayOfOpenedCards);
+        numOfMatchesMade++;
       }
       // Otherwise, if there is no match,
       // then hide and remove these cards from the array of opened cards
