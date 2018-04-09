@@ -212,7 +212,7 @@ function getStartTime() {
   return timeGameStarted;
 }
 
-// Update the countdown timer and insert this into the HTML
+// Update the countdown timer and insert this into the score panel
 function updateCountdownTimer(timeGameStarted) {
   // Get the current time
   const currentTime = performance.now();
@@ -226,9 +226,15 @@ function updateCountdownTimer(timeGameStarted) {
   isTheGameOverAndWon(timeRemaining);
 }
 
-// Reset the countdown timer in the HTML
+// Reset the countdown timer in the score panel
 function resetCountdownTimer(countdownBeginningTime) {
   countdownTimerSpan.innerHTML = Math.round(countdownBeginningTime/1000);
+}
+
+// Set the countdown timer in the score panel to 0
+function setCountdownTimerToZero() {
+  // Update the score panel html count down timer to 0
+  countdownTimerSpan.innerHTML = 0;
 }
 
 // Update the contents of the game over modal based on the current status
@@ -259,8 +265,16 @@ function updateGameOverModalContents() {
   modalMovesCounterSpan.innerHTML = movesCounter;
 
   // Update the time taken span
+  // Make sure that the countdown timer is set to zero and not a negative
+  // number if the game was lost
+  if (gameWon == false) {
+    setCountdownTimerToZero();
+  }
+  // Find out how much time was remaining
   const timeRemaining = countdownTimerSpan.innerHTML;
+  // Find out how much time was used up
   const timeElapsed = Math.round(gameTimeLimit/1000 - timeRemaining);
+  // Update the time taken span in the modal
   modalTimeRemainingSpan.innerHTML = timeElapsed;
 }
 
