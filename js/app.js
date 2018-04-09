@@ -164,16 +164,16 @@ function generateStarBoundaries(boundariesArray, sizeOfCardDeck, arrayOfAllSymbo
   return boundariesArray;
 }
 
-// Remove a star from the HTML
+// Empty a star in the score panel
 function removeAStar(listOfStars, starIndex) {
   // Change the last full star into an empty star
-  listOfStars.children[starCounterIndex].firstElementChild.classList.replace('fa-star', 'fa-star-o');
+  listOfStars.children[starIndex].firstElementChild.classList.replace('fa-star', 'fa-star-o');
   // Update the star counter index
   starIndex--;
   return starIndex;
 }
 
-// Remove a star from the star list whenever the moves counter hits any of the
+// Empty a star from the star list whenever the moves counter hits any of the
 // star boundaries
 function updateStarList(boundariesArray, numOfMoves, listOfStars, starIndex) {
   for (let i=0; i<boundariesArray.length; i++) {
@@ -184,8 +184,18 @@ function updateStarList(boundariesArray, numOfMoves, listOfStars, starIndex) {
   return starIndex;
 }
 
-// Reset the star list by adding all the stars in the star document fragment
-// into the star list
+// Empty all stars from the score panel
+function removeAllStars(listOfStars, starIndex) {
+  // Change all the stars into empty stars
+  for (let i=0; i<listOfStars.children.length; i++) {
+    listOfStars.children[i].firstElementChild.classList.replace('fa-star', 'fa-star-o');
+  }
+  // Update the star counter index
+  starIndex = 0;
+  return starIndex;
+}
+
+// Reset the star list by filling up all the stars
 function resetStarList(listOfStars, starIndex) {
   // Change all the stars into full stars
   for (let i=0; i<listOfStars.children.length; i++) {
@@ -234,8 +244,15 @@ function updateGameOverModalContents() {
 
   // Update the star counter
   // by cloning the star list in the game score panel section
+  // If the game was lost, then empty all the stars
+  if (gameWon == false) {
+    starCounterIndex = removeAllStars(starList, starCounterIndex);
+  }
+  // Clone the star list in the score panel
   const ulStarsCloned = starList.cloneNode(true);
+  // Empty the previous contents of the modal's star list
   modalStarList.innerHTML = '';
+  // Add the clones score panel's star list into the modal's star list container
   modalStarList.appendChild(ulStarsCloned);
 
   // Update the moves counter
