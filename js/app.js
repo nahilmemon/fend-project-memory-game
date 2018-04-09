@@ -4,13 +4,12 @@ const numOfCards = 16;
 let arrayOfOpenedCards = [];
 let cardTimer;
 let movesCounter = 0;
-const gameTimeLimit = 5000; // in units of ms
+const gameTimeLimit = 20000; // in units of ms
 let startTime;
 let gameHasBegun = false;
 let countdownTimer;
 let starBoundaryArray = [];
-// Create a document fragment to store the stars removed from the star list
-const starDocFragment = document.createDocumentFragment();
+let starCounterIndex = 2; // number of stars minus one
 let gameOver = false;
 let gameWon = false;
 let numOfMatchesMade = 0;
@@ -166,28 +165,35 @@ function generateStarBoundaries(boundariesArray, sizeOfCardDeck, arrayOfAllSymbo
 }
 
 // Remove a star from the HTML
-function removeAStar(listOfStars, starFrag) {
-  // Delete the first star li element from the star ul list
-  const starChild = listOfStars.removeChild(listOfStars.firstElementChild);
-  // Add this star li child into the star document fragment
-  starFrag.appendChild(starChild);
+function removeAStar(listOfStars, starIndex) {
+  // Change the last full star into an empty star
+  listOfStars.children[starCounterIndex].firstElementChild.classList.replace('fa-star', 'fa-star-o');
+  // Update the star counter index
+  starIndex--;
+  return starIndex;
 }
 
 // Remove a star from the star list whenever the moves counter hits any of the
 // star boundaries
-function updateStarList(boundariesArray, numOfMoves, listOfStars, starFrag) {
+function updateStarList(boundariesArray, numOfMoves, listOfStars, starIndex) {
   for (let i=0; i<boundariesArray.length; i++) {
     if (numOfMoves == boundariesArray[i]) {
-      removeAStar(listOfStars, starFrag);
+      starIndex = removeAStar(listOfStars, starIndex);
     }
   }
+  return starIndex;
 }
 
 // Reset the star list by adding all the stars in the star document fragment
 // into the star list
-function resetStarList(listOfStars, starFrag) {
-  // Add star document fragment into the star list
-  listOfStars.appendChild(starFrag);
+function resetStarList(listOfStars, starIndex) {
+  // Change all the stars into full stars
+  for (let i=0; i<listOfStars.children.length; i++) {
+    listOfStars.children[i].firstElementChild.classList.replace('fa-star-o', 'fa-star');
+  }
+  // Reset the star counter index
+  starIndex = 2;
+  return starIndex;
 }
 
 // Get the time at which the game started
@@ -228,12 +234,9 @@ function updateGameOverModalContents() {
 
   // Update the star counter
   // by cloning the star list in the game score panel section
+  const ulStarsCloned = starList.cloneNode(true);
   modalStarList.innerHTML = '';
-  // The user should only get a star rating if they won the game
-  if (gameWon == true) {
-    const ulStarsCloned = starList.cloneNode(true);
-    modalStarList.appendChild(ulStarsCloned);
-  }
+  modalStarList.appendChild(ulStarsCloned);
 
   // Update the moves counter
   modalMovesCounterSpan.innerHTML = movesCounter;
@@ -279,8 +282,8 @@ function restartGame() {
   gameHasBegun = false;
   // Reset the number of moves counter
   movesCounter = resetMovesCounter(movesCounter, movesCounterSpan);
-  // Reset the star list
-  resetStarList(starList, starDocFragment);
+  // Reset the star list and the star counter index
+  starCounterIndex = resetStarList(starList);
   // Regenerate the star boundaries array
   generateStarBoundaries(starBoundaryArray, numOfCards, arrayOfPossibleSymbols);
   // Clear the card timer
@@ -360,7 +363,7 @@ cardDeck.addEventListener('click', function (event) {
       // Update the number of moves counter
       movesCounter = updateMovesCounter(movesCounter, movesCounterSpan);
       // Update the star list
-      updateStarList(starBoundaryArray, movesCounter, starList, starDocFragment);
+      starCounterIndex = updateStarList(starBoundaryArray, movesCounter, starList, starCounterIndex);
       // If the two cards match,
       // then lock the matched cards
       if (clickedCard.innerHTML == arrayOfOpenedCards[0].innerHTML) {
