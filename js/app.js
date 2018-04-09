@@ -4,7 +4,7 @@ const numOfCards = 16;
 let arrayOfOpenedCards = [];
 let cardTimer;
 let movesCounter = 0;
-const gameTimeLimit = 60000; // in units of ms
+const gameTimeLimit = 5000; // in units of ms
 let startTime;
 let gameHasBegun = false;
 let countdownTimer;
@@ -21,6 +21,15 @@ const restartButton = document.querySelector('.restart');
 const movesCounterSpan = document.querySelector('.moves');
 const countdownTimerSpan = document.querySelector('.countdown-timer');
 const starList = document.querySelector('.stars');
+const modalOverlay = document.querySelector('.modal-overlay');
+const modalGameOver = document.querySelector('#modal-game-over');
+const modalClose = modalGameOver.querySelector('.modal-close');
+const modalTriggerButton = document.querySelector('.modal-trigger');
+const modalRestartButton = document.querySelector('.modal-restart-button');
+const modalGameOverTitle = modalGameOver.querySelector('.game-over-title');
+const modalStarList = modalGameOver.querySelector('.modal-stars');
+const modalMovesCounterSpan = modalGameOver.querySelector('.moves');
+const modalTimeRemainingSpan = modalGameOver.querySelector('.time-taken');
 
 // ------ Functions ------ //
 // Create a new card deck array from the given array of possible symbols
@@ -206,6 +215,35 @@ function resetCountdownTimer(countdownBeginningTime) {
   countdownTimerSpan.innerHTML = Math.round(countdownBeginningTime/1000);
 }
 
+// Update the contents of the game over modal based on the current status
+// of the game (game won/loss state, number of stars, number of moves, and
+// time taken)
+function updateGameOverModalContents() {
+  // Update the game won/lost sentence
+  if (gameWon == true) {
+    modalGameOverTitle.innerHTML = 'Congratulations! You Won!';
+  } else {
+    modalGameOverTitle.innerHTML = 'Boo! You Lost!';
+  }
+
+  // Update the star counter
+  // by cloning the star list in the game score panel section
+  modalStarList.innerHTML = '';
+  // The user should only get a star rating if they won the game
+  if (gameWon == true) {
+    const ulStarsCloned = starList.cloneNode(true);
+    modalStarList.appendChild(ulStarsCloned);
+  }
+
+  // Update the moves counter
+  modalMovesCounterSpan.innerHTML = movesCounter;
+
+  // Update the time taken span
+  const timeRemaining = countdownTimerSpan.innerHTML;
+  const timeElapsed = Math.round(gameTimeLimit/1000 - timeRemaining);
+  modalTimeRemainingSpan.innerHTML = timeElapsed;
+}
+
 // Figure out if the game is over yet and if it has been won or not
 function isTheGameOverAndWon(timeRemaining) {
   if ((timeRemaining < 0 || numOfMatchesMade == numOfCards/2) && gameOver == false) {
@@ -220,17 +258,17 @@ function isTheGameOverAndWon(timeRemaining) {
     if (numOfMatchesMade == numOfCards/2) {
       // Update the game won status
       gameWon = true;
-      // Alert the user that the game was won
-      alert('You won!');
     }
     // Else if the timer ran out before all the matches were made,
     // then alert the user that he/she lost the game
     else {
       // Update the game won status
       gameWon = false;
-      // Alert the user that the game was lost
-      alert('You lost!');
     }
+    // Update the contents of the game over modal
+    updateGameOverModalContents();
+    // Display the modal
+    toggleModalGameOver();
   }
 }
 
@@ -256,9 +294,14 @@ function restartGame() {
   gameWon = false;
   numOfMatchesMade = 0;
   // Empty the array of opened cards
-  let arrayOfOpenedCards = [];
+  arrayOfOpenedCards = [];
   // Create a new deck of cards and add this to the HTML
   updateHTMLWithNewCardDeck(numOfCards);
+}
+
+// Show/hide the game over modal
+function toggleModalGameOver() {
+  modalGameOver.classList.toggle('modal-show');
 }
 
 // ------ Initialization ------ //
@@ -334,4 +377,17 @@ cardDeck.addEventListener('click', function (event) {
       }
     }
   }
+});
+
+// When the user clicks on the close modal button, close the modal
+modalClose.addEventListener('click', toggleModalGameOver);
+
+// When the user clicks anywhere outside of the modal, close it
+modalOverlay.addEventListener('click', toggleModalGameOver);
+
+// When the user clicks on the restart button,
+// close the modal and restart the game
+modalRestartButton.addEventListener('click', function(){
+  toggleModalGameOver();
+  restartGame();
 });

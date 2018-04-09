@@ -100,8 +100,50 @@
         <i class="fa fa-cube"></i>
       </li>
     </ul>
-  </div>
 
+    <!-- Game Over Modal -->
+    <section class="modal modal-effect-1" id="modal-game-over">
+      <div class="modal-content">
+        <!-- Header -->
+        <div class="modal-header">
+          <!-- Close modal button -->
+          <button class="modal-close unstyled-button">×</button>
+          <!-- Game over title declaration -->
+          <h2 class="game-over-title">Congratulations! You Won!</h2>
+        </div>
+        <!-- Body -->
+        <div class="modal-body">
+          <!-- Star counter -->
+          <div class="modal-stars">
+            <ul class="stars">
+              <li><i class="fa fa-star"></i></li>
+            </ul>
+          </div>
+          <!-- Moves counter -->
+          <div class="modal-stats-container">
+            <h3 class="summary-title">Moves</h3>
+            <p class="summary-statistic moves">21</p>
+          </div>
+          <!-- Time taken -->
+          <div class="modal-stats-container">
+            <h3 class="summary-title">Time Taken</h3>
+            <p class="summary-statistic"><span class="time-taken">33</span> s</p>
+          </div>
+        </div>
+        <!-- Footer -->
+        <div class="modal-footer">
+          <!-- Restart game button -->
+          <button class="modal-restart-button unstyled-button modal-button">
+            <i class="fa fa-repeat"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay"></div>
+
+  </div>
   <!-- Link to JS Files -->
   <!-- Main script for the game -->
   <script src="js/app.js"></script>
