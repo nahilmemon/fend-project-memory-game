@@ -223,14 +223,6 @@ h1 {
 .modal-body {
   padding: 1em;
   text-align: center;
-  /* Flexbox */
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-flow: row wrap;
-  justify-content: space-around;
 }
 
 /* For flexbox layouts*/
@@ -266,6 +258,18 @@ h1 {
   margin: 0 auto;
 }
 
+/* Flexbox container with space around justification */
+.flex-container {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-flow: row wrap;
+  justify-content: space-around;
+}
+
+/* Hide an element */
 .hide {
   display: none;
 }
