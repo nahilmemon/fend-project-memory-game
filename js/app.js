@@ -1,18 +1,24 @@
 // ------ Global Variables ------ //
 const arrayOfPossibleSymbols = ['fa-diamond', 'fa-paper-plane-o', 'fa-anchor', 'fa-bolt', 'fa-cube', 'fa-leaf', 'fa-bicycle', 'fa-bomb'];
-const numOfCards = 16;
 let arrayOfOpenedCards = [];
 let cardTimer;
 let movesCounter = 0;
-const gameTimeLimit = 20000; // in units of ms
 let startTime;
 let gameHasBegun = false;
 let countdownTimer;
 let starBoundaryArray = [];
 let starCounterIndex = 2; // number of stars minus one
 let gameOver = false;
-let gameWon = false;
+let gameLevelWon = false;
+let gameOverallWon = false; // status of whether all levels have been won
 let numOfMatchesMade = 0;
+let levelIndex = 0;
+let arrayOfLevelDeckSizes = [4, 8, 16, 32, 48];
+let arrayOfLevelTimeLimits = [10000, 30000, 90000, 180000, 300000]; // in units of ms
+const levelMaxIndex = arrayOfLevelDeckSizes.length - 1;
+let numOfCards = arrayOfLevelDeckSizes[levelIndex];
+let gameTimeLimit = arrayOfLevelTimeLimits[levelIndex]; // in units of ms
+let resetGame = true;
 
 // --- Selectors --- //
 const cardDeck = document.querySelector('.deck');
@@ -29,31 +35,31 @@ const modalGameOverTitle = modalGameOver.querySelector('.game-over-title');
 const modalStarList = modalGameOver.querySelector('.modal-stars');
 const modalMovesCounterSpan = modalGameOver.querySelector('.moves');
 const modalTimeRemainingSpan = modalGameOver.querySelector('.time-taken');
+const modalNextLevelButton = modalGameOver.querySelector('.modal-next-level-button');
 
 // ------ Functions ------ //
 // Create a new card deck array from the given array of possible symbols
 function createNewCardDeckArray(arrayOfAllSymbols, sizeOfCardDeck) {
   // Determine the number of card symbols needed
   // One card deck should have half the number of symbols as there are cards
-  // Round this number up in case an odd number is given
-  let numOfCardSymbols = Math.ceil(sizeOfCardDeck/2);
-  // Make sure that numOfCardSymbols is a reasonable number
-  if (numOfCardSymbols < 2) {
-    // Should have at least two pairs
-    numOfCardSymbols = 2;
-  } else if (numOfCardSymbols > arrayOfAllSymbols.length) {
-    // should have no more pairs than what is available to choose from
-    numOfCardSymbols = arrayOfAllSymbols.length;
-  }
+  let numOfCardSymbols = sizeOfCardDeck/2;
 
   // Shuffle the possible symbols array
   shuffle(arrayOfAllSymbols);
 
   // Create a new card deck array from the array of possible symbols:
-  // Get the number of symbols needed
-  let newCardDeckArray = arrayOfAllSymbols.slice(0, numOfCardSymbols);
+  let newCardDeckArray = [];
+  let j = 0;
+  for (let i=0; i<numOfCardSymbols; i++) {
+    // j is determined this way in case there aren't as many symbols as
+    // there are pairs of cards that need to be made
+    j = i % arrayOfAllSymbols.length;
+    newCardDeckArray.push(arrayOfAllSymbols[j]);
+  }
+
   // Duplicate these symbols
   newCardDeckArray = [...newCardDeckArray, ...newCardDeckArray];
+
   // Shuffle the deck
   shuffle(newCardDeckArray);
 
@@ -146,17 +152,9 @@ function resetMovesCounter(numOfMovesCounter, movesHTMLSelector) {
 }
 
 // Generate the star boundaries to compare with the moves counter
-function generateStarBoundaries(boundariesArray, sizeOfCardDeck, arrayOfAllSymbols) {
+function generateStarBoundaries(boundariesArray, sizeOfCardDeck) {
   // Figure out the number of pairs for the given card deck size
   const numOfPairs = sizeOfCardDeck/2;
-  // Make sure that numOfPairs is a reasonable number
-  if (numOfPairs < 2) {
-    // Should have at least two pairs
-    numOfPairs = 2;
-  } else if (numOfPairs > arrayOfAllSymbols.length) {
-    // Should have no more pairs than what is available to choose from
-    numOfPairs = arrayOfAllSymbols.length;
-  }
   // Generate each star boundary based on the number of pairs
   boundariesArray[0] = Math.round(numOfPairs*1.25 + 1);
   boundariesArray[1] = Math.round(numOfPairs*1.625 + 1);
@@ -241,17 +239,37 @@ function setCountdownTimerToZero() {
 // of the game (game won/loss state, number of stars, number of moves, and
 // time taken)
 function updateGameOverModalContents() {
-  // Update the game won/lost sentence
-  if (gameWon == true) {
-    modalGameOverTitle.innerHTML = 'Congratulations! You Won!';
-  } else {
-    modalGameOverTitle.innerHTML = 'Boo! You Lost!';
+  // Change the game over title sentence based on whether the level and/or game
+  // was won
+  // Check if the user won the current level of the game
+  if (gameLevelWon == true) {
+    // Check if the user won all the levels
+    if (gameOverallWon == true) {
+      // Change the game over title to the whole game was won
+      modalGameOverTitle.innerHTML = 'Congratulations! You won the game!';
+      // Hide the next level button
+      modalNextLevelButton.classList.add('hide');
+    }
+    // Else if there are still more levels to complete
+    else {
+      // Change the game over title to the level was won
+      modalGameOverTitle.innerHTML = 'Congratulations! You beat this level!';
+      // Show the next level button
+      modalNextLevelButton.classList.remove('hide');
+    }
+  }
+  // Else if the user lost the level (and thus the lost the whole game)
+  else {
+    // Change the game over title to the whole game was lost
+    modalGameOverTitle.innerHTML = 'Boo! You lost the game!';
+    // Hide the next level button
+    modalNextLevelButton.classList.add('hide');
   }
 
   // Update the star counter
   // by cloning the star list in the game score panel section
-  // If the game was lost, then empty all the stars
-  if (gameWon == false) {
+  // If the level was lost, then empty all the stars
+  if (gameLevelWon == false) {
     starCounterIndex = removeAllStars(starList, starCounterIndex);
   }
   // Clone the star list in the score panel
@@ -267,7 +285,7 @@ function updateGameOverModalContents() {
   // Update the time taken span
   // Make sure that the countdown timer is set to zero and not a negative
   // number if the game was lost
-  if (gameWon == false) {
+  if (gameOverallWon == false) {
     setCountdownTimerToZero();
   }
   // Find out how much time was remaining
@@ -280,6 +298,10 @@ function updateGameOverModalContents() {
 
 // Figure out if the game is over yet and if it has been won or not
 function isTheGameOverAndWon(timeRemaining) {
+  // If the game isn't over AND
+  // EITHER the time ran out OR all matches were made
+  // then update the relevant booleans to state that the game finished
+  // and whether it was won or lost
   if ((timeRemaining < 0 || numOfMatchesMade == numOfCards/2) && gameOver == false) {
     // Update the game over status
     gameOver = true;
@@ -288,16 +310,33 @@ function isTheGameOverAndWon(timeRemaining) {
     // Clear the game countdown timer
     clearInterval(countdownTimer);
     // If the user matched all the cards before the timer ran out,
-    // then alert him/her that he/she won the game
+    // then alert him/her that he/she won the level and/or overall game
     if (numOfMatchesMade == numOfCards/2) {
-      // Update the game won status
-      gameWon = true;
+      // Update the game level won status
+      gameLevelWon = true;
+      // If the last level was won,
+      // then update the game overall won status and the reset game status
+      if (levelIndex == levelMaxIndex) {
+        gameOverallWon = true;
+        resetGame = true;
+      }
+      // Else if the level was lost,
+      // then update the game overall won status to lost and update the
+      // reset game status accordingly
+      else {
+        gameOverallWon = false;
+        resetGame = false;
+      }
     }
     // Else if the timer ran out before all the matches were made,
     // then alert the user that he/she lost the game
     else {
-      // Update the game won status
-      gameWon = false;
+      // Update the game overall won status
+      gameOverallWon = false;
+      // Update the game level status
+      gameLevelWon = false;
+      // Update the reset game status
+      resetGame = true;
     }
     // Update the contents of the game over modal
     updateGameOverModalContents();
@@ -309,6 +348,18 @@ function isTheGameOverAndWon(timeRemaining) {
 // Restart the game by creating a new deck of cards and resetting all
 // global variables
 function restartGame() {
+  // Reset the level index if reset game is true
+  if (resetGame == true) {
+    levelIndex = 0;
+  }
+  // Otherwise increment the level
+  else {
+    levelIndex++;
+  }
+  // Update the size of the deck
+  numOfCards = arrayOfLevelDeckSizes[levelIndex];
+  // Update the game time limit
+  gameTimeLimit = arrayOfLevelTimeLimits[levelIndex];
   // Reset the game has begun boolean
   gameHasBegun = false;
   // Reset the number of moves counter
@@ -316,7 +367,7 @@ function restartGame() {
   // Reset the star list and the star counter index
   starCounterIndex = resetStarList(starList);
   // Regenerate the star boundaries array
-  generateStarBoundaries(starBoundaryArray, numOfCards, arrayOfPossibleSymbols);
+  generateStarBoundaries(starBoundaryArray, numOfCards);
   // Clear the card timer
   clearTimeout(cardTimer);
   // Clear the game countdown timer
@@ -325,8 +376,9 @@ function restartGame() {
   resetCountdownTimer(gameTimeLimit);
   // Reset the game state statuses
   gameOver = false;
-  gameWon = false;
   numOfMatchesMade = 0;
+  gameLevelWon = false;
+  gameOverallWon = false;
   // Empty the array of opened cards
   arrayOfOpenedCards = [];
   // Create a new deck of cards and add this to the HTML
@@ -345,7 +397,10 @@ restartGame();
 // ------ Events ------ //
 // When the user clicks the restart button,
 // update the card deck HTML with a new card deck
-restartButton.addEventListener('click', restartGame);
+restartButton.addEventListener('click', function() {
+  resetGame = true;
+  restartGame();
+});
 
 // When a card is clicked,
 // reveal this card and check if it matches any previously selected cards.
@@ -423,5 +478,15 @@ modalOverlay.addEventListener('click', toggleModalGameOver);
 // close the modal and restart the game
 modalRestartButton.addEventListener('click', function(){
   toggleModalGameOver();
+  resetGame = true;
+  restartGame();
+});
+
+// When the user clicks the next level button,
+// then close the modal, change the level settings, and restart the game
+// with these new settings
+modalNextLevelButton.addEventListener('click', function() {
+  toggleModalGameOver();
+  resetGame = false;
   restartGame();
 });
