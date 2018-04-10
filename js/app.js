@@ -156,9 +156,9 @@ function generateStarBoundaries(boundariesArray, sizeOfCardDeck) {
   // Figure out the number of pairs for the given card deck size
   const numOfPairs = sizeOfCardDeck/2;
   // Generate each star boundary based on the number of pairs
-  boundariesArray[0] = Math.round(numOfPairs*1.25 + 1);
-  boundariesArray[1] = Math.round(numOfPairs*1.625 + 1);
-  boundariesArray[2] = Math.round(numOfPairs*2 + 1);
+  boundariesArray[0] = Math.round(numOfPairs*1.5 + 1);
+  boundariesArray[1] = Math.round(numOfPairs*2.0 + 1);
+  boundariesArray[2] = Math.round(numOfPairs*2.5 + 1);
   return boundariesArray;
 }
 
