@@ -285,7 +285,7 @@ function updateGameOverModalContents() {
   // Update the time taken span
   // Make sure that the countdown timer is set to zero and not a negative
   // number if the game was lost
-  if (gameOverallWon == false) {
+  if (gameLevelWon == false) {
     setCountdownTimerToZero();
   }
   // Find out how much time was remaining
