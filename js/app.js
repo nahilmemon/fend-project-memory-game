@@ -516,6 +516,21 @@ function toggleModalGameOver() {
   modalGameOver.classList.toggle('modal-show');
 }
 
+// Determine whether the game has begun
+// If so, then update the gameHasBegun status and start the countdown timer
+function determineAndBeginGame() {
+  // If the game has not yet begun, then change this status
+  if (gameHasBegun == false) {
+    gameHasBegun = true;
+    // Get the time at which the game started
+    startTime = getStartTime();
+    // Start the countdown timer
+    countdownTimer = setInterval(function() {
+      updateCountdownTimer(startTime);
+    }, 1000);
+  }
+}
+
 // ------ Initialization ------ //
 // Reset all game parameters and generate a new card deck
 restartGame();
@@ -538,16 +553,9 @@ cardDeck.addEventListener('click', function (event) {
   // and not the deck ul
   // Also make sure that the clicked card hasn't already been matched
   if (clickedCard.nodeName.toUpperCase() == 'LI' && clickedCard.classList.contains('match') == false && gameOver == false) {
-    // If the game has not yet begun, then change this status
-    if (gameHasBegun == false) {
-      gameHasBegun = true;
-      // Get the time at which the game started
-      startTime = getStartTime();
-      // Start the countdown timer
-      countdownTimer = setInterval(function() {
-        updateCountdownTimer(startTime);
-      }, 1000);
-    }
+    // If the game has not yet begun, then change this status and start the
+    // countdown timer
+    determineAndBeginGame();
 
     // Hide all hinted cards
     // Clear out the hint timer for revealing two matching cards
@@ -628,14 +636,7 @@ modalNextLevelButton.addEventListener('click', function() {
 hintButton.addEventListener('click', function() {
   // Find and reveal two matching cards
   findCardMatch();
-  // If the game has not yet begun, then change this status
-  if (gameHasBegun == false) {
-    gameHasBegun = true;
-    // Get the time at which the game started
-    startTime = getStartTime();
-    // Start the countdown timer
-    countdownTimer = setInterval(function() {
-      updateCountdownTimer(startTime);
-    }, 1000);
-  }
+  // If the game has not yet begun, then change this status and start the
+  // countdown timer
+  determineAndBeginGame();
 });
