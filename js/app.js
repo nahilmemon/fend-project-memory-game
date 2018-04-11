@@ -1,5 +1,6 @@
 // ------ Global Variables ------ //
-const arrayOfPossibleSymbols = ['fa-diamond', 'fa-paper-plane-o', 'fa-anchor', 'fa-bolt', 'fa-cube', 'fa-leaf', 'fa-bicycle', 'fa-bomb'];
+let arrayOfPossibleSymbols = ['fa-diamond', 'fa-paper-plane-o', 'fa-anchor',
+  'fa-bolt', 'fa-cube', 'fa-leaf', 'fa-bicycle', 'fa-bomb'];
 let arrayOfOpenedCards = [];
 let cardTimer;
 let movesCounter = 0;
@@ -23,6 +24,14 @@ let hintCounter = 0;
 let hintsLeftCounter = 0;
 let hintTimer;
 let arrayOfHintedCards = [];
+const arraysOfIconSets = [['fa-diamond', 'fa-paper-plane-o', 'fa-anchor',
+  'fa-bolt', 'fa-cube', 'fa-leaf', 'fa-bicycle', 'fa-bomb'],
+  ['fa-ambulance', 'fa-heartbeat', 'fa-hospital-o', 'fa-medkit', 'fa-stethoscope',
+  'fa-user-md', 'fa-wheelchair'],
+  ['fa-ambulance', 'fa-car', 'fa-bicycle', 'fa-bus', 'fa-taxi', 'fa-fighter-jet',
+  'fa-motorcycle', 'fa-plane', 'fa-rocket', 'fa-ship', 'fa-space-shuttle',
+  'fa-subway', 'fa-train', 'fa-truck']];
+let doNotChangeLevel = false;
 
 // --- Selectors --- //
 const cardDeck = document.querySelector('.deck');
@@ -43,6 +52,7 @@ const modalNextLevelButton = modalGameOver.querySelector('.modal-next-level-butt
 const hintButton = document.querySelector('.hint');
 const hintsLeftSpan = document.querySelector('.hints-left');
 const modalHintsUsedSpan = modalGameOver.querySelector('.hints-used');
+const dropdownIconSetSelect = document.querySelector('.dropdown.icon-set');
 
 // ------ Functions ------ //
 // Create a new card deck array from the given array of possible symbols
@@ -463,6 +473,22 @@ function isTheGameOverAndWon(timeRemaining) {
   }
 }
 
+// Get the value of the selected option in the given <select> dropdown
+function getDropdownValue(dropdownSelector) {
+  let dropdownValue = dropdownSelector.options[dropdownSelector.selectedIndex].value;
+  return dropdownValue;
+}
+
+// Get the icon set array of icon classes based on the selected option
+// in the icon set dropdown
+function getIconSetArray(dropdownSelector, arraysOfIconSets) {
+  // Get the value of the selected option in the icon set dropdown
+  const dropdownIconSetValue = getDropdownValue(dropdownSelector);
+  // Get the corresponding array of icon classes based on this value
+  const arrayOfSymbols = arraysOfIconSets[dropdownIconSetValue];
+  return arrayOfSymbols;
+}
+
 // Restart the game by creating a new deck of cards and resetting all
 // global variables
 function restartGame() {
@@ -470,9 +496,14 @@ function restartGame() {
   if (resetGame == true) {
     levelIndex = 0;
   }
-  // Otherwise increment the level
-  else {
+  // Otherwise increment the level only if it is okay to change it
+  else if (doNotChangeLevel == false) {
     levelIndex++;
+  }
+  // Else if it is not okay to change the level,
+  // then don't touch the levelIndex and reset doNotChangeLevel
+  else {
+    doNotChangeLevel = false;
   }
   // Update the size of the deck
   numOfCards = arrayOfLevelDeckSizes[levelIndex];
@@ -507,6 +538,9 @@ function restartGame() {
   gameOverallWon = false;
   // Empty the array of opened cards
   arrayOfOpenedCards = [];
+  // Populate the array of symbols with the desired icon set based off the
+  // selected option in the icon set dropdown
+  arrayOfPossibleSymbols = getIconSetArray(dropdownIconSetSelect, arraysOfIconSets);
   // Create a new deck of cards and add this to the HTML
   updateHTMLWithNewCardDeck(numOfCards);
 }
@@ -639,4 +673,13 @@ hintButton.addEventListener('click', function() {
   // If the game has not yet begun, then change this status and start the
   // countdown timer
   determineAndBeginGame();
+});
+
+// When the user selects an icon set in the corresponding dropdown,
+// restart the game at the current level with cards with the desired set of icons
+// only if the icon set currently chosen is different from the previous choice
+dropdownIconSetSelect.addEventListener('change', function() {
+  resetGame = false;
+  doNotChangeLevel = true;
+  restartGame();
 });
