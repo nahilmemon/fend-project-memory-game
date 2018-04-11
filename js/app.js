@@ -1,5 +1,5 @@
 // ------ Global Variables ------ //
-let arrayOfPossibleSymbols = ['fa-diamond', 'fa-paper-plane-o', 'fa-anchor',
+let arrayOfPossibleSymbols = ['fa-gem', 'fa-paper-plane', 'fa-anchor',
   'fa-bolt', 'fa-cube', 'fa-leaf', 'fa-bicycle', 'fa-bomb'];
 let arrayOfOpenedCards = [];
 let cardTimer;
@@ -24,9 +24,9 @@ let hintCounter = 0;
 let hintsLeftCounter = 0;
 let hintTimer;
 let arrayOfHintedCards = [];
-const arraysOfIconSets = [['fa-diamond', 'fa-paper-plane-o', 'fa-anchor',
+const arraysOfIconSets = [['fa-gem', 'fa-paper-plane', 'fa-anchor',
   'fa-bolt', 'fa-cube', 'fa-leaf', 'fa-bicycle', 'fa-bomb'],
-  ['fa-ambulance', 'fa-heartbeat', 'fa-hospital-o', 'fa-medkit', 'fa-stethoscope',
+  ['fa-ambulance', 'fa-heartbeat', 'fa-hospital-alt', 'fa-medkit', 'fa-stethoscope',
   'fa-user-md', 'fa-wheelchair'],
   ['fa-ambulance', 'fa-car', 'fa-bicycle', 'fa-bus', 'fa-taxi', 'fa-fighter-jet',
   'fa-motorcycle', 'fa-plane', 'fa-rocket', 'fa-ship', 'fa-space-shuttle',
@@ -99,7 +99,7 @@ function updateHTMLWithNewCardDeck(sizeOfCardDeck) {
   for (let i = 0; i < sizeOfCardDeck; i++) {
     const newCardElement = document.createElement('li');
     newCardElement.classList.add('card');
-    newCardElement.innerHTML = `<i class="fa ${newCardDeckArray[i]}"></i>`;
+    newCardElement.innerHTML = `<i class="fas ${newCardDeckArray[i]}"></i>`;
     docFragment.appendChild(newCardElement);
   }
   // Add the new card deck HTML from the docFragment
@@ -182,7 +182,7 @@ function generateStarBoundaries(boundariesArray, sizeOfCardDeck) {
 // Empty a star in the score panel
 function removeAStar(listOfStars, starIndex) {
   // Change the last full star into an empty star
-  listOfStars.children[starIndex].firstElementChild.classList.replace('fa-star', 'fa-star-o');
+  listOfStars.children[starIndex].firstElementChild.classList.replace('fas', 'far');
   // Update the star counter index
   starIndex--;
   return starIndex;
@@ -209,7 +209,7 @@ function updateStarList(boundariesArray, numOfMoves, listOfStars, starIndex, num
 function removeAllStars(listOfStars, starIndex) {
   // Change all the stars into empty stars
   for (let i=0; i<listOfStars.children.length; i++) {
-    listOfStars.children[i].firstElementChild.classList.replace('fa-star', 'fa-star-o');
+    listOfStars.children[i].firstElementChild.classList.replace('fas', 'far');
   }
   // Update the star counter index
   starIndex = 0;
@@ -220,7 +220,7 @@ function removeAllStars(listOfStars, starIndex) {
 function resetStarList(listOfStars, starIndex) {
   // Change all the stars into full stars
   for (let i=0; i<listOfStars.children.length; i++) {
-    listOfStars.children[i].firstElementChild.classList.replace('fa-star-o', 'fa-star');
+    listOfStars.children[i].firstElementChild.classList.replace('far', 'fas');
   }
   // Reset the star counter index
   starIndex = 2;
