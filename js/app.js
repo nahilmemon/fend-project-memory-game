@@ -19,6 +19,10 @@ const levelMaxIndex = arrayOfLevelDeckSizes.length - 1;
 let numOfCards = arrayOfLevelDeckSizes[levelIndex];
 let gameTimeLimit = arrayOfLevelTimeLimits[levelIndex]; // in units of ms
 let resetGame = true;
+let hintCounter = 0;
+let hintsLeftCounter = 0;
+let hintTimer;
+let arrayOfHintedCards = [];
 
 // --- Selectors --- //
 const cardDeck = document.querySelector('.deck');
@@ -36,6 +40,9 @@ const modalStarList = modalGameOver.querySelector('.modal-stars');
 const modalMovesCounterSpan = modalGameOver.querySelector('.moves');
 const modalTimeRemainingSpan = modalGameOver.querySelector('.time-taken');
 const modalNextLevelButton = modalGameOver.querySelector('.modal-next-level-button');
+const hintButton = document.querySelector('.hint');
+const hintsLeftSpan = document.querySelector('.hints-left');
+const modalHintsUsedSpan = modalGameOver.querySelector('.hints-used');
 
 // ------ Functions ------ //
 // Create a new card deck array from the given array of possible symbols
@@ -173,9 +180,15 @@ function removeAStar(listOfStars, starIndex) {
 
 // Empty a star from the star list whenever the moves counter hits any of the
 // star boundaries
-function updateStarList(boundariesArray, numOfMoves, listOfStars, starIndex) {
+function updateStarList(boundariesArray, numOfMoves, listOfStars, starIndex, numOfHints) {
+  // The number of hints used as well as the number of moves made should both
+  // affect the number of stars left
+  const numOfMovesAndHints = numOfMoves + numOfHints*2;
+  // Iterate through the star boundary array and determine whether the
+  // numOfMovesAndHints has hit any of the boundaries.
+  // If so, then remove a star
   for (let i=0; i<boundariesArray.length; i++) {
-    if (numOfMoves == boundariesArray[i]) {
+    if (numOfMovesAndHints == boundariesArray[i]) {
       starIndex = removeAStar(listOfStars, starIndex);
     }
   }
@@ -202,6 +215,104 @@ function resetStarList(listOfStars, starIndex) {
   // Reset the star counter index
   starIndex = 2;
   return starIndex;
+}
+
+// Generate the number of hints left
+function generateHintsLeft(hintsRemainingCounter, hintsRemainingSelector) {
+  // The initial number of hints left should be equal to 25% of the deck size
+  hintsRemainingCounter = Math.ceil(numOfCards*0.25);
+  // Update the hints left span with this new value
+  hintsRemainingSelector.innerHTML = hintsRemainingCounter;
+  return hintsRemainingCounter;
+}
+
+// Update the hint counter and the hints left counter
+function updateHintsLeft(hintsUsedCounter, hintsRemainingCounter, hintsRemainingSelector) {
+  // Increment the hints used counter
+  hintsUsedCounter++;
+  // Decrement the hints left counter
+  hintsRemainingCounter--;
+  // Update the hints left span in the score panel
+  hintsRemainingSelector.innerHTML = hintsRemainingCounter;
+  return [hintsUsedCounter, hintsRemainingCounter];
+}
+
+// Reveal two matching cards and add them to the array of hinted cards
+function revealCardMatch(firstCard, secondCard, arrayOfRevealedCards) {
+  // Reveal the two given cards
+  firstCard.classList.add('hint');
+  secondCard.classList.add('hint');
+  // Add these two cards to the array of hinted cards
+  arrayOfRevealedCards.push(firstCard);
+  arrayOfRevealedCards.push(secondCard);
+  return arrayOfRevealedCards;
+}
+
+// Hide all the revealed cards and remove all the cards in the array of
+// hinted cards
+function hideHintedCards(arrayOfRevealedCards) {
+  // Hide all the cards in the array of hinted cards
+  for (let i=0; i<arrayOfRevealedCards.length; i++) {
+    arrayOfRevealedCards[i].classList.remove('hint');
+  }
+  // Remove all the cards in the array of hinted cards
+  arrayOfRevealedCards = [];
+  return arrayOfRevealedCards;
+}
+
+// Find the match for the desired card when the user asks for a hint
+function findCardMatch() {
+  // Only find a match if there are any hints left
+  if (hintsLeftCounter > 0) {
+    let firstCard, secondCard; // to store the matching cards
+    // If no cards have been selected when the hint button was selected,
+    // then let the firstCard be the first unopened card without a match,
+    // and the secondCard be the second instance of the card with the same
+    // icon as the firstCard's icon
+    if (arrayOfOpenedCards.length == 0) {
+      // Get the firstCard for which a match is desired
+      // by looking for the first unopened, unmatched card
+      firstCard = document.querySelector('li.card:not(.open):not(.match)');
+      // Get the firstCard's icon
+      const firstCardIcon = firstCard.firstElementChild.classList[1];
+      // Find the matching secondCard's icon by looking through the card deck ul
+      // There will be more than one unopened, unmatched card with the same
+      // icon since the firstCard hasn't been opened yet either,
+      // so find the whole list of elements that match this criteria and
+      // choose the second element in this list for the second icon
+      const secondCardIconQuerySelectorString = `li.card:not(.open):not(.match) > i.${firstCardIcon}`;
+      const secondCardIcon = document.querySelectorAll(secondCardIconQuerySelectorString)[1];
+      // Get the secondCard
+      secondCard = secondCardIcon.parentElement;
+    }
+    // Otherwise, if a card is already open,
+    // then let the firstCard be the already openeed card that has no match,
+    // and the secondCard be the first instance of an unopened, unmatched
+    // card with the same icon as the firstCard
+    else if (arrayOfOpenedCards.length == 1) {
+      // Get the firstCard for which a match is desired
+      // by choosing the already clicked upon card
+      firstCard = arrayOfOpenedCards[0];
+      // Get the firstCard's icon
+      const firstCardIcon = firstCard.firstElementChild.classList[1];
+      // Find the matching secondCard's icon by looking through the card deck ul
+      // for the first unopened, unmatched card with the same icon
+      // as the firstCard's icon since the firstCard is already open
+      let secondCardIconQuerySelectorString = `li.card:not(.open):not(.match) > i.${firstCardIcon}`;
+      const secondCardIcon = document.querySelector(secondCardIconQuerySelectorString);
+      // Get the secondCard
+      secondCard = secondCardIcon.parentElement;
+    }
+    // Reveal the two cards and add them to the array of hinted cards
+    arrayOfHintedCards = revealCardMatch(firstCard, secondCard, arrayOfHintedCards);
+    // Hide the two cards after a short delay
+    hintTimer = setTimeout(function() {
+      arrayOfHintedCards = hideHintedCards(arrayOfHintedCards);
+    }, 1000);
+    // Update the values hints used counter and the hints left counter
+    // and the text in hints left span in the score panel
+    [hintCounter, hintsLeftCounter] = updateHintsLeft(hintCounter, hintsLeftCounter, hintsLeftSpan);
+  }
 }
 
 // Get the time at which the game started
@@ -282,6 +393,9 @@ function updateGameOverModalContents() {
   // Update the moves counter
   modalMovesCounterSpan.innerHTML = movesCounter;
 
+  // Update the hints used span
+  modalHintsUsedSpan.innerHTML = hintCounter;
+
   // Update the time taken span
   // Make sure that the countdown timer is set to zero and not a negative
   // number if the game was lost
@@ -307,6 +421,10 @@ function isTheGameOverAndWon(timeRemaining) {
     gameOver = true;
     // Clear the card timer
     clearTimeout(cardTimer);
+    // Clear the hint timer
+    clearTimeout(hintTimer);
+    // Hide all the hinted cards and empty the array of hinted cards
+    arrayOfHintedCards = hideHintedCards(arrayOfHintedCards);
     // Clear the game countdown timer
     clearInterval(countdownTimer);
     // If the user matched all the cards before the timer ran out,
@@ -368,8 +486,16 @@ function restartGame() {
   starCounterIndex = resetStarList(starList);
   // Regenerate the star boundaries array
   generateStarBoundaries(starBoundaryArray, numOfCards);
+  // Regenerate the number of hints left
+  hintsLeftCounter = generateHintsLeft(hintsLeftCounter, hintsLeftSpan);
+  // Reset the hints used counter
+  hintCounter = 0;
   // Clear the card timer
   clearTimeout(cardTimer);
+  // Clear the card timer
+  clearTimeout(hintTimer);
+  // Hide all the hinted cards and empty the array of hinted cards
+  arrayOfHintedCards = hideHintedCards(arrayOfHintedCards);
   // Clear the game countdown timer
   clearInterval(countdownTimer);
   // Reset the countdown timer in the HTML
@@ -423,12 +549,18 @@ cardDeck.addEventListener('click', function (event) {
       }, 1000);
     }
 
+    // Hide all hinted cards
+    // Clear out the hint timer for revealing two matching cards
+    clearTimeout(hintTimer);
+    // Hide all the hinted cards and empty the array of hinted cards
+    arrayOfHintedCards = hideHintedCards(arrayOfHintedCards);
+
     // If 2 cards have already been clicked,
     // then hide and remove the previously opened cards
     if (arrayOfOpenedCards.length == 2) {
-      // clear out the card timer for hiding and removing the last two cards
+      // Clear out the card timer for hiding and removing the last two cards
       clearTimeout(cardTimer);
-      // hide and remove the first two cards in the array of opened cards
+      // Hide and remove the first two cards in the array of opened cards
       hideAndRemoveOpenedCards(arrayOfOpenedCards[0], arrayOfOpenedCards[1], arrayOfOpenedCards);
     }
 
@@ -449,7 +581,7 @@ cardDeck.addEventListener('click', function (event) {
       // Update the number of moves counter
       movesCounter = updateMovesCounter(movesCounter, movesCounterSpan);
       // Update the star list
-      starCounterIndex = updateStarList(starBoundaryArray, movesCounter, starList, starCounterIndex);
+      starCounterIndex = updateStarList(starBoundaryArray, movesCounter, starList, starCounterIndex, hintCounter);
       // If the two cards match,
       // then lock the matched cards
       if (clickedCard.innerHTML == arrayOfOpenedCards[0].innerHTML) {
@@ -489,4 +621,21 @@ modalNextLevelButton.addEventListener('click', function() {
   toggleModalGameOver();
   resetGame = false;
   restartGame();
+});
+
+// When the user clicks on the hint button,
+// then reveal two matching cards
+hintButton.addEventListener('click', function() {
+  // Find and reveal two matching cards
+  findCardMatch();
+  // If the game has not yet begun, then change this status
+  if (gameHasBegun == false) {
+    gameHasBegun = true;
+    // Get the time at which the game started
+    startTime = getStartTime();
+    // Start the countdown timer
+    countdownTimer = setInterval(function() {
+      updateCountdownTimer(startTime);
+    }, 1000);
+  }
 });

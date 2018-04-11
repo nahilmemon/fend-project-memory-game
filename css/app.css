@@ -85,6 +85,10 @@ h1 {
   font-size: 33px;
 }
 
+.deck .card.hint {
+  background: #fd356e;
+}
+
 /*
  * Styles for the Game Statistics and Buttons Section
  */
@@ -115,6 +119,8 @@ h1 {
 .unstyled-button {
   background-color: transparent;
   border: none;
+  cursor: pointer;
+  font: inherit;
 }
 
 /*
@@ -233,7 +239,7 @@ h1 {
 }
 
 .modal-stats-container {
-  width: 50%;
+  width: 33%;
 }
 
 /* Modal Footer */
