@@ -24,13 +24,63 @@ let hintCounter = 0;
 let hintsLeftCounter = 0;
 let hintTimer;
 let arrayOfHintedCards = [];
-const arraysOfIconSets = [['fa-gem', 'fa-paper-plane', 'fa-anchor',
-  'fa-bolt', 'fa-cube', 'fa-leaf', 'fa-bicycle', 'fa-bomb'],
-  ['fa-ambulance', 'fa-heartbeat', 'fa-hospital-alt', 'fa-medkit', 'fa-stethoscope',
-  'fa-user-md', 'fa-wheelchair'],
-  ['fa-ambulance', 'fa-car', 'fa-bicycle', 'fa-bus', 'fa-taxi', 'fa-fighter-jet',
-  'fa-motorcycle', 'fa-plane', 'fa-rocket', 'fa-ship', 'fa-space-shuttle',
-  'fa-subway', 'fa-train', 'fa-truck']];
+const arraysOfIconSets = [
+  [
+    'fa-bolt', 'fa-sun', 'fa-cloud', 'fa-tint', 'fa-umbrella', 'fa-snowflake',
+    'fa-moon', 'fa-leaf', 'fa-tree', 'fa-seedling', 'fa-fire'
+  ],
+  [
+    'fa-box-open', 'fa-boxes', 'fa-clipboard-list', 'fa-dolly', 'fa-pallet',
+    'fa-truck-moving', 'fa-shipping-fast', 'fa-warehouse', 'fa-truck-loading',
+    'fa-tape', 'fa-map-signs'
+  ],
+  [
+    'fa-baseball-ball', 'fa-basketball-ball', 'fa-bowling-ball', 'fa-football-ball',
+    'fa-futbol', 'fa-golf-ball', 'fa-hockey-puck', 'fa-quidditch', 'fa-table-tennis',
+    'fa-volley-ball'
+  ],
+  [
+    'fa-balance-scale', 'fa-bed', 'fa-bell', 'fa-book', 'fa-briefcase', 'fa-building',
+    'fa-coffee', 'fa-fire-extinguisher', 'fa-flag-checkered', 'fa-flask', 'fa-gamepad',
+    'fa-home', 'fa-hospital-alt', 'fa-industry', 'fa-life-ring', 'fa-map',
+    'fa-map-marker-alt', 'fa-map-signs', 'fa-money-bill-alt', 'fa-paw', 'fa-plane',
+    'fa-rocket', 'fa-ship', 'fa-shopping-cart', 'fa-ticket-alt', 'fa-tree',
+    'fa-university', 'fa-utensils'
+  ],
+  [
+    'fa-database', 'fa-desktop', 'fa-hdd', 'fa-headphones', 'fa-keyboard', 'fa-laptop',
+     'fa-microchip', 'fa-mobile-alt', 'fa-plug', 'fa-print', 'fa-save', 'fa-server',
+     'fa-tablet-alt', 'fa-tv', 'fa-gamepad', 'fa-camera', 'fa-video', 'fa-fax',
+     'fa-phone', 'fa-android', 'fa-apple', 'fa-windows', 'fa-battery-empty',
+     'fa-bluetooth-b'
+  ],
+  [
+    'fa-allergies', 'fa-ambulance', 'fa-band-aid', 'fa-capsules', 'fa-diagnoses',
+    'fa-dna', 'fa-file-medical-alt', 'fa-first-aid', 'fa-heartbeat', 'fa-hospital-alt',
+    'fa-pills', 'fa-prescription-bottle', 'fa-procedures', 'fa-stethoscope',
+    'fa-syringe', 'fa-tablets', 'fa-thermometer', 'fa-user-md', 'fa-vial', 'fa-vials',
+    'fa-weight', 'fa-x-ray', 'fa-wheelchair'
+  ],
+  [
+    'fa-ambulance', 'fa-bicycle', 'fa-bus', 'fa-car', 'fa-motorcycle', 'fa-plane',
+    'fa-rocket', 'fa-ship', 'fa-space-shuttle', 'fa-subway', 'fa-train', 'fa-truck',
+    'fa-taxi', 'fa-parachute-box'
+  ],
+  [
+    'fa-bitcoin', 'fa-dollar-sign', 'fa-euro-sign', 'fa-lira-sign', 'fa-pound-sign',
+    'fa-ruble-sign', 'fa-rupee-sign', 'fa-shekel-sign', 'fa-won-sign', 'fa-yen-sign',
+     'fa-cc-amazon-pay', 'fa-cc-amex', 'fa-cc-apple-pay', 'fa-cc-diners-club',
+     'fa-cc-discover', 'fa-cc-jcb', 'fa-cc-mastercard', 'fa-cc-paypal', 'fa-cc-stripe',
+     'fa-cc-visa', 'fa-credit-card', 'fa-ethereum', 'fa-google-wallet', 'fa-paypal'
+  ],
+  [
+    'fa-hand-holding', 'fa-hand-lizard', 'fa-hand-paper', 'fa-hand-peace',
+    'fa-hand-point-down', 'fa-hand-point-left', 'fa-hand-point-right',
+    'fa-hand-point-up', 'fa-hand-rock', 'fa-hand-scissors', 'fa-hand-spock',
+    'fa-hands', 'fa-handshake', 'fa-thumbs-down', 'fa-thumbs-up', 'fa-sign-language',
+    'fa-american-sign-language-interpreting'
+  ]
+];
 let doNotChangeLevel = false;
 
 // --- Selectors --- //
