@@ -210,21 +210,6 @@ h1 {
   padding: 1em;
 }
 
-/* Modal Close Button */
-.modal-close {
-  color: white;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.modal-close:hover,
-.modal-close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
-
 /* Modal Body */
 .modal-body {
   padding: 1em;

@@ -93,10 +93,7 @@ const restartButton = document.querySelector('.restart');
 const movesCounterSpan = document.querySelector('.moves');
 const countdownTimerSpan = document.querySelector('.countdown-timer');
 const starList = document.querySelector('.stars');
-const modalOverlay = document.querySelector('.modal-overlay');
 const modalGameOver = document.querySelector('#modal-game-over');
-const modalClose = modalGameOver.querySelector('.modal-close');
-const modalTriggerButton = document.querySelector('.modal-trigger');
 const modalRestartButton = document.querySelector('.modal-restart-button');
 const modalGameOverTitle = modalGameOver.querySelector('.game-over-title');
 const modalStarList = modalGameOver.querySelector('.modal-stars');
@@ -721,12 +718,6 @@ cardDeck.addEventListener('click', function (event) {
     }
   }
 });
-
-// When the user clicks on the close modal button, close the modal
-modalClose.addEventListener('click', toggleModalGameOver);
-
-// When the user clicks anywhere outside of the modal, close it
-modalOverlay.addEventListener('click', toggleModalGameOver);
 
 // When the user clicks on the restart button,
 // close the modal and restart the game
