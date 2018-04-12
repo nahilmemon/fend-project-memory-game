@@ -1,6 +1,5 @@
 // ------ Global Variables ------ //
-let arrayOfPossibleSymbols = ['fa-gem', 'fa-paper-plane', 'fa-anchor',
-  'fa-bolt', 'fa-cube', 'fa-leaf', 'fa-bicycle', 'fa-bomb'];
+let arrayOfPossibleSymbols = [];
 let arrayOfOpenedCards = [];
 let cardTimer;
 let movesCounter = 0;
@@ -14,11 +13,16 @@ let gameLevelWon = false;
 let gameOverallWon = false; // status of whether all levels have been won
 let numOfMatchesMade = 0;
 let levelIndex = 0;
+let difficulty = 0; // 0: easy, 1: medium, 2: hard
 let arrayOfLevelDeckSizes = [4, 8, 16, 32, 48];
-let arrayOfLevelTimeLimits = [10000, 30000, 90000, 180000, 300000]; // in units of ms
+let arraysOfLevelTimeLimits = [
+  [10000, 25000, 40000, 90000, 300000],
+  [8000, 15000, 30000, 60000, 150000],
+  [6000, 9000, 20000, 40000, 100000]
+]; // in units of ms
 const levelMaxIndex = arrayOfLevelDeckSizes.length - 1;
 let numOfCards = arrayOfLevelDeckSizes[levelIndex];
-let gameTimeLimit = arrayOfLevelTimeLimits[levelIndex]; // in units of ms
+let gameTimeLimit = arraysOfLevelTimeLimits[difficulty][levelIndex]; // in units of ms
 let resetGame = true;
 let hintCounter = 0;
 let hintsLeftCounter = 0;
@@ -103,6 +107,7 @@ const hintButton = document.querySelector('.hint');
 const hintsLeftSpan = document.querySelector('.hints-left');
 const modalHintsUsedSpan = modalGameOver.querySelector('.hints-used');
 const dropdownIconSetSelect = document.querySelector('.dropdown.icon-set');
+const dropdownDifficultySelect = document.querySelector('.dropdown.difficulty');
 
 // ------ Functions ------ //
 // Create a new card deck array from the given array of possible symbols
@@ -240,10 +245,18 @@ function removeAStar(listOfStars, starIndex) {
 
 // Empty a star from the star list whenever the moves counter hits any of the
 // star boundaries
-function updateStarList(boundariesArray, numOfMoves, listOfStars, starIndex, numOfHints) {
-  // The number of hints used as well as the number of moves made should both
-  // affect the number of stars left
-  const numOfMovesAndHints = numOfMoves + numOfHints*2;
+function updateStarList(boundariesArray, numOfMoves, listOfStars, starIndex, numOfHints, difficultySetting) {
+  // The number of hints used, the number of moves made, and the difficulty setting
+  // should all affect the number of stars left
+  let numOfMovesAndHints;
+  if (difficultySetting == 0) {
+    numOfMovesAndHints = numOfMoves;
+  } else if (difficultySetting == 1) {
+    numOfMovesAndHints = numOfMoves + numOfHints*1;
+  } else {
+    numOfMovesAndHints = numOfMoves + numOfHints*3;
+  }
+
   // Iterate through the star boundary array and determine whether the
   // numOfMovesAndHints has hit any of the boundaries.
   // If so, then remove a star
@@ -278,9 +291,16 @@ function resetStarList(listOfStars, starIndex) {
 }
 
 // Generate the number of hints left
-function generateHintsLeft(hintsRemainingCounter, hintsRemainingSelector) {
-  // The initial number of hints left should be equal to 25% of the deck size
-  hintsRemainingCounter = Math.ceil(numOfCards*0.25);
+function generateHintsLeft(hintsRemainingCounter, hintsRemainingSelector, sizeOfCardDeck, difficultySetting) {
+  // The initial number of hints left should depend on the difficulty setting
+  // and the size of the deck
+  if (difficultySetting == 0) {
+    hintsRemainingCounter = Math.ceil(sizeOfCardDeck*0.50);
+  } else if (difficultySetting == 1) {
+    hintsRemainingCounter = Math.ceil(sizeOfCardDeck*0.25);
+  } else {
+    hintsRemainingCounter = Math.floor(sizeOfCardDeck*0.10);
+  }
   // Update the hints left span with this new value
   hintsRemainingSelector.innerHTML = hintsRemainingCounter;
   return hintsRemainingCounter;
@@ -539,6 +559,14 @@ function getIconSetArray(dropdownSelector, arraysOfIconSets) {
   return arrayOfSymbols;
 }
 
+// Get the difficulty setting based on the option selected in the
+// corresponding dropdown dropdown
+function getDifficultySetting(dropdownSelector) {
+  // Get the value of the selected option in the difficulty setting dropdown
+  const difficultySetting = getDropdownValue(dropdownSelector);
+  return difficultySetting;
+}
+
 // Restart the game by creating a new deck of cards and resetting all
 // global variables
 function restartGame() {
@@ -555,10 +583,12 @@ function restartGame() {
   else {
     doNotChangeLevel = false;
   }
+  // Get the difficulty setting
+  difficulty = getDifficultySetting(dropdownDifficultySelect);
   // Update the size of the deck
   numOfCards = arrayOfLevelDeckSizes[levelIndex];
   // Update the game time limit
-  gameTimeLimit = arrayOfLevelTimeLimits[levelIndex];
+  gameTimeLimit = arraysOfLevelTimeLimits[difficulty][levelIndex];
   // Reset the game has begun boolean
   gameHasBegun = false;
   // Reset the number of moves counter
@@ -568,7 +598,7 @@ function restartGame() {
   // Regenerate the star boundaries array
   generateStarBoundaries(starBoundaryArray, numOfCards);
   // Regenerate the number of hints left
-  hintsLeftCounter = generateHintsLeft(hintsLeftCounter, hintsLeftSpan);
+  hintsLeftCounter = generateHintsLeft(hintsLeftCounter, hintsLeftSpan, numOfCards, difficulty);
   // Reset the hints used counter
   hintCounter = 0;
   // Clear the card timer
@@ -731,5 +761,14 @@ hintButton.addEventListener('click', function() {
 dropdownIconSetSelect.addEventListener('change', function() {
   resetGame = false;
   doNotChangeLevel = true;
+  restartGame();
+});
+
+// When the user selects a difficulty setting in the corresponding dropdown,
+// restart the game with this difficulty at level 0 only if the setting currently
+// chosen is different from the previous choice
+dropdownDifficultySelect.addEventListener('change', function() {
+  resetGame = true;
+  doNotChangeLevel = false;
   restartGame();
 });
