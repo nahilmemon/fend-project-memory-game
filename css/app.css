@@ -23,7 +23,6 @@ body {
 body {
   /* Background pattern from Subtle Patterns */
   background: #ffffff url('../img/geometry2.png');
-  font-family: 'Coda', cursive;
 }
 
 .container {
@@ -31,11 +30,6 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-}
-
-h1 {
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 300;
 }
 
 /*
@@ -92,7 +86,6 @@ h1 {
 /*
  * Styles for the Game Statistics and Buttons Section
  */
-
 .score-panel {
   text-align: left;
   width: 345px;
@@ -263,4 +256,117 @@ h1 {
 /* Hide an element */
 .hide {
   display: none;
+}
+
+/*
+ * Typography
+ */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size-adjust: 0.5;
+}
+
+body {
+  font: 1em/1.25 'Montserrat', Verdana, sans-serif;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+h1 {
+  font-size: 2em
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: 1.625em
+  line-height: 1.15384615;
+}
+
+h3 {
+  font-size: 1.375em
+  line-height: 1.13636364;
+}
+
+h4 {
+  font-size: 1.125em
+  line-height: 1.11111111;
+}
+
+blockquote {
+  font-size: 1.25em;
+  line-height: 1.25;
+}
+
+.summary-statistic {
+  font-size: 2em;
+  margin: 0;
+}
+
+.summary-title {
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  body {
+    font-size: 1em;
+    line-height: 1.375;
+  }
+
+  h1 {
+    font-size: 2.5em;
+    line-height: 1.125;
+  }
+
+  h2 {
+    font-size: 2em;
+    line-height: 1.25;
+  }
+
+  h3 {
+    font-size: 1.5em;
+    line-height: 1.25;
+  }
+
+  h4 {
+    line-height: 1.22222222;
+  }
+
+  blockquote {
+    font-size: 1.5em;
+    line-height: 1.45833333;
+  }
+
+  .summary-statistic {
+    font-size: 2.5em;
+  }
+}
+
+@media (min-width: 992px) {
+  h1 {
+    font-size: 3em;
+    line-height: 1.05;
+  }
+
+  h2 {
+    font-size: 2.25em;
+    line-height: 1.25;
+  }
+
+  h3 {
+    font-size: 1.75em;
+    line-height: 1.25;
+  }
+
+  .summary-statistic  {
+    font-size: 3em;
+  }
+}
+
+select {
+  font: inherit;
 }
