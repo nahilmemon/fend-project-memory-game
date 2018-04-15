@@ -682,7 +682,9 @@ function isTheGameOverAndWon(timeRemaining) {
     // Update the contents of the game over modal
     updateGameOverModalContents();
     // Display the modal
-    toggleModalGameOver();
+    let modalDelayTimer = setTimeout(function() {
+      toggleModalGameOver();
+    }, 1500);
   }
 }
 
