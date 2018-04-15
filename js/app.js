@@ -362,7 +362,8 @@ function generateStarBoundaries(boundariesArray, sizeOfCardDeck) {
 // Empty a star in the score panel
 function removeAStar(listOfStars, starIndex) {
   // Change the last full star into an empty star
-  listOfStars.children[starIndex].firstElementChild.classList.replace('fas', 'far');
+  listOfStars.children[starIndex].firstElementChild.classList.remove('fas');
+  listOfStars.children[starIndex].firstElementChild.classList.add('far');
   // Update the star counter index
   starIndex--;
   return starIndex;
@@ -397,7 +398,8 @@ function updateStarList(boundariesArray, numOfMoves, listOfStars, starIndex, num
 function removeAllStars(listOfStars, starIndex) {
   // Change all the stars into empty stars
   for (let i=0; i<listOfStars.children.length; i++) {
-    listOfStars.children[i].firstElementChild.classList.replace('fas', 'far');
+    listOfStars.children[i].firstElementChild.classList.remove('fas');
+    listOfStars.children[i].firstElementChild.classList.add('far');
   }
   // Update the star counter index
   starIndex = 0;
@@ -408,7 +410,8 @@ function removeAllStars(listOfStars, starIndex) {
 function resetStarList(listOfStars, starIndex) {
   // Change all the stars into full stars
   for (let i=0; i<listOfStars.children.length; i++) {
-    listOfStars.children[i].firstElementChild.classList.replace('far', 'fas');
+    listOfStars.children[i].firstElementChild.classList.remove('far');
+    listOfStars.children[i].firstElementChild.classList.add('fas');
   }
   // Reset the star counter index
   starIndex = 2;
