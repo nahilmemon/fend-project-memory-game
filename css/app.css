@@ -64,12 +64,8 @@ body {
 }
 
 .deck .card.open {
-  transform: rotateY(0);
   background: #02b3e4;
   cursor: default;
-}
-
-.deck .card.show {
   font-size: 33px;
 }
 
@@ -77,10 +73,6 @@ body {
   cursor: default;
   background: #02ccba;
   font-size: 33px;
-}
-
-.deck .card.hint {
-  background: #fd356e;
 }
 
 /*

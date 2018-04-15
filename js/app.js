@@ -1,7 +1,6 @@
 // ------ Global Variables ------ //
 let arrayOfPossibleSymbols = [];
 let arrayOfOpenedCards = [];
-let cardTimer;
 let movesCounter = 0;
 let startTime;
 let gameHasBegun = false;
@@ -26,8 +25,6 @@ let gameTimeLimit = arraysOfLevelTimeLimits[difficulty][levelIndex]; // in units
 let resetGame = true;
 let hintCounter = 0;
 let hintsLeftCounter = 0;
-let hintTimer;
-let arrayOfHintedCards = [];
 const arraysOfIconSets = [
   [
     'fa-bolt', 'fa-sun', 'fa-cloud', 'fa-tint', 'fa-umbrella', 'fa-snowflake',
@@ -86,6 +83,7 @@ const arraysOfIconSets = [
   ]
 ];
 let doNotChangeLevel = false;
+let arraysOfAnimationPlayers = [[], [], [], []]; // 0: opening, 1: closing, 2: matching, 3: hinting
 
 // --- Selectors --- //
 const cardDeck = document.querySelector('.deck');
@@ -105,6 +103,67 @@ const hintsLeftSpan = document.querySelector('.hints-left');
 const modalHintsUsedSpan = modalGameOver.querySelector('.hints-used');
 const dropdownIconSetSelect = document.querySelector('.dropdown.icon-set');
 const dropdownDifficultySelect = document.querySelector('.dropdown.difficulty');
+
+// --- Animation Helpers --- //
+// Keyframes
+const keyframesFlipCardOpen = [
+  { transform: 'rotateY(180deg)', background: '#2e3d49', fontSize: '0' },
+  { background: '#2e3d49', fontSize: '0', offset: 0.5 },
+  { background: '#02b3e4', fontSize: '33px', offset: 0.50001 },
+  { transform: 'rotateY(0deg)', background: '#02b3e4', fontSize: '33px' }
+];
+const keyframesFlipCardClose = [
+  { transform: 'rotateY(0deg)', background: '#02b3e4', fontSize: '33px' },
+  { background: '#02b3e4', fontSize: '33px', offset: 0.5 },
+  { background: '#2e3d49', fontSize: '0', offset: 0.50001 },
+  { transform: 'rotateY(180deg)', background: '#2e3d49', fontSize: '0' }
+];
+// The following two keyframe details have been taken from
+// http://www.theappguruz.com/tag-tools/web/CSSAnimations/
+const keyframesMatch = [
+ { transform: 'scale3d(1, 1, 1)', background: '#02b3e4' },
+ { transform: 'scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg)', offset: 0.1 },
+ { transform: 'scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg)', offset: 0.2 },
+ { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.3 },
+ { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg)', offset: 0.4 },
+ { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.5 },
+ { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg)', offset: 0.6 },
+ { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.7 },
+ { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg)', offset: 0.8 },
+ { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.9 },
+ { transform: 'scale3d(1, 1, 1)', background: '#02ccba' }
+];
+const keyframesHint = [
+ { transform: 'translate3d(0, 0, 0)', background: '#2e3d49' },
+ { transform: 'translate3d(-10px, 0, 0)', offset: 0.1 },
+ { transform: 'translate3d(10px, 0, 0)', offset: 0.2 },
+ { transform: 'translate3d(-10px, 0, 0)', offset: 0.3 },
+ { transform: 'translate3d(10px, 0, 0)', offset: 0.4 },
+ { transform: 'translate3d(-10px, 0, 0)', background: '#fd356e', offset: 0.5 },
+ { transform: 'translate3d(10px, 0, 0)', offset: 0.6 },
+ { transform: 'translate3d(-10px, 0, 0)', offset: 0.7 },
+ { transform: 'translate3d(10px, 0, 0)', offset: 0.8 },
+ { transform: 'translate3d(-10px, 0, 0)', offset: 0.9 },
+ { transform: 'translate3d(0, 0, 0)', background: '#2e3d49' }
+];
+// Timing
+const timingShowHint = {
+  duration: 1000,
+  fill: 'backwards'
+}
+const timingShowMatches = {
+  duration: 1000,
+  fill: 'both'
+}
+const timingFlipCardOpen = {
+  duration: 500,
+  fill: 'both'
+}
+const timingFlipCardClose = {
+  duration: 500,
+  fill: 'both',
+  delay: 500
+}
 
 // ------ Functions ------ //
 // Create a new card deck array from the given array of possible symbols
@@ -174,13 +233,22 @@ function shuffle(array) {
   return array;
 }
 
-// Reveal the given card input
-function revealCard(cardElement) {
-  cardElement.classList.add('open', 'show');
-}
+// Reveal the given card input and add it to the array of opened cards
+function revealCard(cardElement, arrayOfSelectedCards) {
+  // Indicate that the given card has been opened
+  cardElement.classList.add('open');
 
-// Add given card input to the array of opened cards
-function addCardToArrayOfOpenedCards(cardElement, arrayOfSelectedCards) {
+  // Animate the given card to look like it's flipping open
+  let cardOpeningPlayer = cardElement.animate(
+    keyframesFlipCardOpen,
+    timingFlipCardOpen
+  );
+
+  // Add the above animation player into the arraysOfAnimationPlayers[0]
+  // (open card players)
+  arraysOfAnimationPlayers[0].push(cardOpeningPlayer);
+
+  // Add the given card to the array of opened cards
   arrayOfSelectedCards.push(cardElement);
 }
 
@@ -190,20 +258,80 @@ function lockMatchedCards(cardElement1, cardElement2, arrayOfSelectedCards) {
   // Indicate that the given cards have been matched
   cardElement1.classList.add('match');
   cardElement2.classList.add('match');
-  // Remove these cards from the array of opened cards
-  arrayOfSelectedCards.pop();
-  arrayOfSelectedCards.pop();
+
+  // When the last card has finished flipping open,
+  // then animate the given cards to signify a match has been made
+  arraysOfAnimationPlayers[0][1].onfinish = function() {
+    // Create the animation players for each card with the match
+    // animation keyframes
+    let cardMatchingPlayer1 = cardElement1.animate(
+      keyframesMatch,
+      timingShowMatches
+    );
+    let cardMatchingPlayer2 = cardElement2.animate(
+      keyframesMatch,
+      timingShowMatches
+    );
+
+    // Add these animation players into arraysOfAnimationPlayers[2]
+    // (match card players)
+    arraysOfAnimationPlayers[2].push(cardMatchingPlayer1);
+    arraysOfAnimationPlayers[2].push(cardMatchingPlayer2);
+
+    // When the match animations have finished,
+    // then empty arraysOfAnimationPlayers[2] (match card players)
+    arraysOfAnimationPlayers[2][1].onfinish = function() {
+      arraysOfAnimationPlayers[2] = [];
+    };
+
+    // Remove these cards from the array of opened cards
+    arrayOfSelectedCards.pop();
+    arrayOfSelectedCards.pop();
+  };
+
+  // Empty arraysOfAnimationPlayers[0] (open card players)
+  arraysOfAnimationPlayers[0] = [];
 }
 
 // Given two card element inputs,
 // hide these cards and remove these cards from the array of opened cards
 function hideAndRemoveOpenedCards(cardElement1, cardElement2, arrayOfSelectedCards) {
-  // Hide the given cards
-  cardElement1.classList.remove('open', 'show');
-  cardElement2.classList.remove('open', 'show');
-  // Remove these cards from the array of opened cards
-  arrayOfSelectedCards.pop();
-  arrayOfSelectedCards.pop();
+  // Inidcate that the given cards are no longer open
+  cardElement1.classList.remove('open');
+  cardElement2.classList.remove('open');
+
+  // When the last card has finished flipping open,
+  // then close the given cards by animating them as flipping over
+  arraysOfAnimationPlayers[0][1].onfinish = function() {
+    // Create the animation players for each card with the flip close
+    // animation keyframes and timing (which has an inherent 1 second delay)
+    let cardClosingPlayer1 = cardElement1.animate(
+      keyframesFlipCardClose,
+      timingFlipCardClose
+    );
+    let cardClosingPlayer2 = cardElement2.animate(
+      keyframesFlipCardClose,
+      timingFlipCardClose
+    );
+
+    // Add these animation players into arraysOfAnimationPlayers[1]
+    // (close card players)
+    arraysOfAnimationPlayers[1].push(cardClosingPlayer1);
+    arraysOfAnimationPlayers[1].push(cardClosingPlayer2);
+
+    // When the flip card close animations have finished,
+    // then empty arraysOfAnimationPlayers[1] (close card players)
+    arraysOfAnimationPlayers[1][1].onfinish = function() {
+      arraysOfAnimationPlayers[1] = [];
+
+      // Remove these cards from the array of opened cards
+      arrayOfSelectedCards.pop();
+      arrayOfSelectedCards.pop();
+    };
+  };
+
+  // Empty arraysOfAnimationPlayers[0] (open card players)
+  arraysOfAnimationPlayers[0] = [];
 }
 
 // Update the number of moves counter
@@ -314,27 +442,50 @@ function updateHintsLeft(hintsUsedCounter, hintsRemainingCounter, hintsRemaining
   return [hintsUsedCounter, hintsRemainingCounter];
 }
 
-// Reveal two matching cards and add them to the array of hinted cards
-function revealCardMatch(firstCard, secondCard, arrayOfRevealedCards) {
-  // Reveal the two given cards
-  firstCard.classList.add('hint');
-  secondCard.classList.add('hint');
-  // Add these two cards to the array of hinted cards
-  arrayOfRevealedCards.push(firstCard);
-  arrayOfRevealedCards.push(secondCard);
-  return arrayOfRevealedCards;
+// Reveal two matching cards
+function revealCardMatch(firstCard, secondCard, revealBothHints) {
+  // Animate the first card with a hint animation,
+  // only if both cards need to be revealed to the user
+  if (revealBothHints == true) {
+    // Create an animation player with the hint animation keyframes
+    let cardHintingPlayer1 = firstCard.animate(
+      keyframesHint,
+      timingShowHint
+    );
+
+    // Add this animation player into arraysOfAnimationPlayers[3]
+    // (hint card players)
+    arraysOfAnimationPlayers[3].push(cardHintingPlayer1);
+  }
+
+  // Animate the second card with a hint animation
+  // Create an animation player with the hint animation keyframes
+  let cardHintingPlayer2 = secondCard.animate(
+    keyframesHint,
+    timingShowHint
+  );
+
+  // Add this animation player into arraysOfAnimationPlayers[3]
+  // (hint card players)
+  arraysOfAnimationPlayers[3].push(cardHintingPlayer2);
+
+  // When the hint animations have finished,
+  // then empty arraysOfAnimationPlayers[3] (hint card players)
+  arraysOfAnimationPlayers[3][0].onfinish = function() {
+    arraysOfAnimationPlayers[3] = [];
+  };
 }
 
-// Hide all the revealed cards and remove all the cards in the array of
-// hinted cards
-function hideHintedCards(arrayOfRevealedCards) {
-  // Hide all the cards in the array of hinted cards
-  for (let i=0; i<arrayOfRevealedCards.length; i++) {
-    arrayOfRevealedCards[i].classList.remove('hint');
+// Hide all the hinted cards
+function hideHintedCards() {
+  // For each hint animation player in the arraysOfAnimationPlayers[3],
+  // force the hint animation to finish immediately
+  for (let i=0; i<arraysOfAnimationPlayers[3].length; i++) {
+    arraysOfAnimationPlayers[3][i].finish();
   }
-  // Remove all the cards in the array of hinted cards
-  arrayOfRevealedCards = [];
-  return arrayOfRevealedCards;
+
+  // Empty arraysOfAnimationPlayers[3] (hint card players)
+  arraysOfAnimationPlayers[3] = [];
 }
 
 // Find the match for the desired card when the user asks for a hint
@@ -342,6 +493,7 @@ function findCardMatch() {
   // Only find a match if there are any hints left
   if (hintsLeftCounter > 0) {
     let firstCard, secondCard; // to store the matching cards
+    let showBothHints = true; // to determine how many cards to animate
     // If no cards have been selected when the hint button was selected,
     // then let the firstCard be the first unopened card without a match,
     // and the secondCard be the second instance of the card with the same
@@ -367,6 +519,8 @@ function findCardMatch() {
     // and the secondCard be the first instance of an unopened, unmatched
     // card with the same icon as the firstCard
     else if (arrayOfOpenedCards.length == 1) {
+      // Update the show both hints boolean since only one card needs to be animated
+      showBothHints = false;
       // Get the firstCard for which a match is desired
       // by choosing the already clicked upon card
       firstCard = arrayOfOpenedCards[0];
@@ -380,13 +534,9 @@ function findCardMatch() {
       // Get the secondCard
       secondCard = secondCardIcon.parentElement;
     }
-    // Reveal the two cards and add them to the array of hinted cards
-    arrayOfHintedCards = revealCardMatch(firstCard, secondCard, arrayOfHintedCards);
-    // Hide the two cards after a short delay
-    hintTimer = setTimeout(function() {
-      arrayOfHintedCards = hideHintedCards(arrayOfHintedCards);
-    }, 1000);
-    // Update the values hints used counter and the hints left counter
+    // Reveal the two cards
+    revealCardMatch(firstCard, secondCard, showBothHints);
+    // Update the values of the hints used counter and the hints left counter
     // and the text in hints left span in the score panel
     [hintCounter, hintsLeftCounter] = updateHintsLeft(hintCounter, hintsLeftCounter, hintsLeftSpan);
   }
@@ -496,12 +646,8 @@ function isTheGameOverAndWon(timeRemaining) {
   if ((timeRemaining < 0 || numOfMatchesMade == numOfCards/2) && gameOver == false) {
     // Update the game over status
     gameOver = true;
-    // Clear the card timer
-    clearTimeout(cardTimer);
-    // Clear the hint timer
-    clearTimeout(hintTimer);
-    // Hide all the hinted cards and empty the array of hinted cards
-    arrayOfHintedCards = hideHintedCards(arrayOfHintedCards);
+    // Hide all the hinted cards
+    hideHintedCards();
     // Clear the game countdown timer
     clearInterval(countdownTimer);
     // If the user matched all the cards before the timer ran out,
@@ -564,6 +710,23 @@ function getDifficultySetting(dropdownSelector) {
   return difficultySetting;
 }
 
+// Finish all the currently playing animations and reset the
+// arraysOfAnimationPlayers
+function finishAndResetAnimations() {
+  // Go into each array in the arraysOfAnimationPlayers
+  for (let i=0; i<arraysOfAnimationPlayers.length; i++) {
+    // Iterate over each animation player stored in the ith array
+    // in the arraysOfAnimationPlayers
+    for (let j=0; j<arraysOfAnimationPlayers[i].length; j++) {
+      // Finish this animation player's animation
+      arraysOfAnimationPlayers[i][j].finish();
+    }
+  }
+
+  // Empty the arraysOfAnimationPlayers
+  arraysOfAnimationPlayers = [[], [], [], []];
+}
+
 // Restart the game by creating a new deck of cards and resetting all
 // global variables
 function restartGame() {
@@ -598,16 +761,14 @@ function restartGame() {
   hintsLeftCounter = generateHintsLeft(hintsLeftCounter, hintsLeftSpan, numOfCards, difficulty);
   // Reset the hints used counter
   hintCounter = 0;
-  // Clear the card timer
-  clearTimeout(cardTimer);
-  // Clear the card timer
-  clearTimeout(hintTimer);
-  // Hide all the hinted cards and empty the array of hinted cards
-  arrayOfHintedCards = hideHintedCards(arrayOfHintedCards);
+  // Hide all the hinted cards
+  hideHintedCards();
   // Clear the game countdown timer
   clearInterval(countdownTimer);
   // Reset the countdown timer in the HTML
   resetCountdownTimer(gameTimeLimit);
+  // Finish all currently running animations and reset the arraysOfAnimationPlayers
+  finishAndResetAnimations();
   // Reset the game state statuses
   gameOver = false;
   numOfMatchesMade = 0;
@@ -663,35 +824,22 @@ cardDeck.addEventListener('click', function (event) {
   // Make sure that the selected targest was actually a card li
   // and not the deck ul
   // Also make sure that the clicked card hasn't already been matched
-  if (clickedCard.nodeName.toUpperCase() == 'LI' && clickedCard.classList.contains('match') == false && gameOver == false) {
+  // and that not more than two unmatched cards are opened at a given time
+  if (clickedCard.nodeName.toUpperCase() == 'LI' && clickedCard.classList.contains('match') == false &&  arrayOfOpenedCards.length < 2 && gameOver == false) {
     // If the game has not yet begun, then change this status and start the
     // countdown timer
     determineAndBeginGame();
 
     // Hide all hinted cards
-    // Clear out the hint timer for revealing two matching cards
-    clearTimeout(hintTimer);
-    // Hide all the hinted cards and empty the array of hinted cards
-    arrayOfHintedCards = hideHintedCards(arrayOfHintedCards);
-
-    // If 2 cards have already been clicked,
-    // then hide and remove the previously opened cards
-    if (arrayOfOpenedCards.length == 2) {
-      // Clear out the card timer for hiding and removing the last two cards
-      clearTimeout(cardTimer);
-      // Hide and remove the first two cards in the array of opened cards
-      hideAndRemoveOpenedCards(arrayOfOpenedCards[0], arrayOfOpenedCards[1], arrayOfOpenedCards);
-    }
+    hideHintedCards();
 
     // Reveal the currently selected card and add it to the array of opened cards
     // if the array of opened cards is empty OR
     // if the array is not empty AND
     // the previously selected cards is not the currently selected card
     if (arrayOfOpenedCards.length == 0 || clickedCard != arrayOfOpenedCards[0]) {
-     // Display the selected card's symbol
-      revealCard(clickedCard);
-      // Add the selected card to the array of opened cards
-      addCardToArrayOfOpenedCards(clickedCard, arrayOfOpenedCards);
+      // Display the selected card's symbol
+      revealCard(clickedCard, arrayOfOpenedCards);
     }
 
     // If the arrray of opened cards already has another card in it,
@@ -709,11 +857,8 @@ cardDeck.addEventListener('click', function (event) {
       }
       // Otherwise, if there is no match,
       // then hide and remove these cards from the array of opened cards
-      // after a short delay
       else {
-        cardTimer = setTimeout(function() {
-          hideAndRemoveOpenedCards(clickedCard, arrayOfOpenedCards[0], arrayOfOpenedCards)
-        }, 1000);
+        hideAndRemoveOpenedCards(clickedCard, arrayOfOpenedCards[0], arrayOfOpenedCards)
       }
     }
   }
