@@ -119,9 +119,8 @@ body {
   position: fixed;
   top: 50%;
   left: 50%;
-  width: 90%;
+  width: 90vw;
   max-width: 630px;
-  min-width: 320px;
   height: auto;
   z-index: 2000;
   visibility: hidden;
@@ -289,6 +288,12 @@ body {
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
+}
+
+.flex-align-self-end {
+  -webkit-align-self: flex-end;
+  -ms-flex-item-align: end;
+  align-self: flex-end;
 }
 
 /* Hide an element */
