@@ -15,9 +15,9 @@ let levelIndex = 0;
 let difficulty = 0; // 0: easy, 1: medium, 2: hard
 let arrayOfLevelDeckSizes = [4, 8, 16, 24, 36]; // square number or square number - 1
 let arraysOfLevelTimeLimits = [
-  [10000, 25000, 40000, 90000, 300000],
-  [8000, 15000, 30000, 60000, 150000],
-  [6000, 9000, 20000, 40000, 100000]
+  [12000, 30000, 55000, 90000, 200000],
+  [9000, 22000, 39000, 75000, 130000],
+  [6000, 13000, 29000, 55000, 100000]
 ]; // in units of ms
 const levelMaxIndex = arrayOfLevelDeckSizes.length - 1;
 let numOfCards = arrayOfLevelDeckSizes[levelIndex];
