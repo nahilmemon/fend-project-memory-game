@@ -103,6 +103,7 @@ const hintsLeftSpan = document.querySelector('.hints-left');
 const modalHintsUsedSpan = modalGameOver.querySelector('.hints-used');
 const dropdownIconSetSelect = document.querySelector('.dropdown.icon-set');
 const dropdownDifficultySelect = document.querySelector('.dropdown.difficulty');
+const levelSpan = document.querySelector('.level');
 
 // --- Animation Helpers --- //
 // Keyframes
@@ -339,6 +340,15 @@ function updateMovesCounter(numOfMovesCounter, movesHTMLSelector) {
   numOfMovesCounter++;
   movesHTMLSelector.innerHTML = numOfMovesCounter;
   return numOfMovesCounter;
+}
+
+// Update the number in the level span
+function updateLevelSpan(level, levelSpanSelector) {
+  // The level displayed should be one more than the level index (since it starts
+  // at 0 instead of 1)
+  level++;
+  // Update the level span with this corrected value;
+  levelSpanSelector.innerHTML = level;
 }
 
 // Reset the number of moves counter
@@ -821,6 +831,8 @@ function restartGame() {
   else {
     doNotChangeLevel = false;
   }
+  // Update the level displayed in the level span
+  updateLevelSpan(levelIndex, levelSpan);
   // Get the difficulty setting
   difficulty = getDifficultySetting(dropdownDifficultySelect);
   // Update the size of the deck
