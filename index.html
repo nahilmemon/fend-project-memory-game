@@ -22,14 +22,17 @@
 </head>
 <body>
   <!-- Page/Game Container -->
-  <div class="container">
+  <div class="container flex-container flex-justify-center flex-align-center flex-direction-column">
     <!-- Header -->
     <header>
       <h1>Match Up!</h1>
     </header>
 
     <!-- Game Statistics and Buttons -->
-    <section class="score-panel">
+    <section class="score-panel flex-container flex-justify-space-between">
+      <!-- Level -->
+      <div>Level <span class="level">1</span></div>
+
       <!-- Star counter -->
       <ul class="stars">
         <li><i class="fas fa-star"></i></li>
@@ -38,11 +41,13 @@
       </ul>
 
       <!-- Number of moves counter -->
-      <span class="moves">0</span> Moves
+      <div><span class="moves">0</span> Moves</div>
 
       <!-- Countdown timer -->
-      <span class="countdown-timer">10</span> s
+      <div><span class="countdown-timer">10</span> s</div>
+    </section>
 
+    <section class="options-panel flex-container flex-justify-space-between">
       <!-- Hint button -->
       <button class="hint unstyled-button">
         <span class="hints-left">0</span>
@@ -76,8 +81,8 @@
     </section>
 
     <!-- Card Deck -->
-    <ul class="deck">
-      <li class="card">
+    <ul class="deck flex-container flex-justify-space-between flex-align-center">
+      <!-- <li class="card">
         <i class="fas fa-diamond"></i>
       </li>
       <li class="card">
@@ -124,7 +129,7 @@
       </li>
       <li class="card">
         <i class="fas fa-cube"></i>
-      </li>
+      </li> -->
     </ul>
 
     <!-- Game Over Modal -->
@@ -136,7 +141,7 @@
           <h2 class="game-over-title">Congratulations! You Won!</h2>
         </div>
         <!-- Body -->
-        <div class="modal-body flex-container">
+        <div class="modal-body flex-container flex-justify-space-around">
           <!-- Star counter -->
           <div class="modal-stars">
             <ul class="stars">
@@ -160,7 +165,7 @@
           </div>
         </div>
         <!-- Footer -->
-        <div class="modal-footer flex-container">
+        <div class="modal-footer flex-container flex-justify-space-around">
           <!-- Restart game button -->
           <button class="modal-restart-button unstyled-button modal-button">
             <i class="fas fa-redo"></i>

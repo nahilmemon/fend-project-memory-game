@@ -13,7 +13,7 @@ let gameOverallWon = false; // status of whether all levels have been won
 let numOfMatchesMade = 0;
 let levelIndex = 0;
 let difficulty = 0; // 0: easy, 1: medium, 2: hard
-let arrayOfLevelDeckSizes = [4, 8, 16, 32, 48];
+let arrayOfLevelDeckSizes = [4, 8, 16, 24, 36]; // square number or square number - 1
 let arraysOfLevelTimeLimits = [
   [10000, 25000, 40000, 90000, 300000],
   [8000, 15000, 30000, 60000, 150000],
@@ -106,13 +106,13 @@ const dropdownDifficultySelect = document.querySelector('.dropdown.difficulty');
 
 // --- Animation Helpers --- //
 // Keyframes
-const keyframesFlipCardOpen = [
+let keyframesFlipCardOpen = [
   { transform: 'rotateY(180deg)', background: '#2e3d49', fontSize: '0' },
   { background: '#2e3d49', fontSize: '0', offset: 0.5 },
   { background: '#02b3e4', fontSize: '33px', offset: 0.50001 },
   { transform: 'rotateY(0deg)', background: '#02b3e4', fontSize: '33px' }
 ];
-const keyframesFlipCardClose = [
+let keyframesFlipCardClose = [
   { transform: 'rotateY(0deg)', background: '#02b3e4', fontSize: '33px' },
   { background: '#02b3e4', fontSize: '33px', offset: 0.5 },
   { background: '#2e3d49', fontSize: '0', offset: 0.50001 },
@@ -209,7 +209,7 @@ function updateHTMLWithNewCardDeck(sizeOfCardDeck) {
   // Create a bunch of card elements and add it to the docFragment
   for (let i = 0; i < sizeOfCardDeck; i++) {
     const newCardElement = document.createElement('li');
-    newCardElement.classList.add('card');
+    newCardElement.classList.add('card', 'flex-container', 'flex-justify-center', 'flex-align-center');
     newCardElement.innerHTML = `<i class="fas ${newCardDeckArray[i]}"></i>`;
     docFragment.appendChild(newCardElement);
   }
@@ -576,6 +576,79 @@ function setCountdownTimerToZero() {
   countdownTimerSpan.innerHTML = 0;
 }
 
+// Change the sizes of the cards based on the number of cards being displayed
+// i.e. based on the current level
+function changeCardSizesBasedOnLevel(level) {
+  // Get the current list of cards
+  const cards = document.querySelectorAll('.card');
+
+  // Determine the max possible deckWidth and deckHeight
+  let deckWidth, deckHeight, deckPaddingX, deckPaddingY;
+  // Change the padding of the deck based on the number of cards since the match
+  // animation takes up a lot of space for larger sized cards
+  if (level < 3) {
+    deckPaddingX = 15; // horizontal padding
+    deckPaddingY = 15; // vertical padding
+  } else {
+    deckPaddingX = 5; // horizontal padding
+    deckPaddingY = 5; // vertical padding
+  }
+  const deckMarginX = 2; // horizontal margin
+  const deckMarginY = 2; // vertical margin
+  const headerHeight = document.querySelector('header').getBoundingClientRect().height;
+  const scorePanelHeight = document.querySelector('.score-panel').getBoundingClientRect().height;;
+  const scorePanelMarginBot = 10;
+  const optionsPanelHeight = document.querySelector('.options-panel').getBoundingClientRect().height;
+  const optionsPanelMarginBot = 10;
+  // The deckWidth is 100vw - the horizontal padding and margin
+  deckWidth = window.innerWidth - (deckPaddingX*2 + deckMarginX*2);
+  // The deckHeight is 100vh - (the vertical padding and margin + the height of
+  // all the other elements on the screen above the deck)
+  deckHeight = window.innerHeight - (headerHeight + scorePanelHeight +
+    scorePanelMarginBot + optionsPanelHeight + optionsPanelMarginBot + deckPaddingY*2
+    + deckMarginY);
+
+  // The deck should be a square, so let the smaller length (between deckWidth
+  // and deckHeight) dictate the final dimensions of the deck
+  if (deckWidth < deckHeight) {
+    deckHeight = deckWidth;
+  } else {
+    deckWidth = deckHeight;
+  }
+
+  // Calculate the card size (the cards should also be squares)
+  let cardWidth, cardHeight;
+  const numOfCardsPerRow = level + 2;
+  // The space between each card should be 2.5% of the deck's size
+  // So the total space is this multiplied by the number of cards per row
+  const totalSpacingBetweenCardsPerRow = 0.025 * deckWidth * numOfCardsPerRow;
+  // The margin of the card on each side
+  const cardMarginOneSide = totalSpacingBetweenCardsPerRow/(2 * numOfCardsPerRow) - 1;
+  // The card size is thus the amount of space left over / the number of cards per row
+  cardWidth = (deckWidth - totalSpacingBetweenCardsPerRow - deckPaddingX * 2)/numOfCardsPerRow;
+
+  // Set the deck size's css based on the calculated dimensions above
+  cardDeck.setAttribute('style', `width: ${deckWidth}px; height: ${deckHeight}px; padding: ${deckPaddingX}px ${deckPaddingY}px;`);
+  // Set each card's dimensions and margin based on the calculations above
+  for (let i=0; i<cards.length; i++) {
+    cards[i].setAttribute('style', `width: ${cardWidth}px; height: ${cardWidth}px; margin: ${cardMarginOneSide}px;`);
+  }
+
+  // Change the font size of the icons based on the current size of the cards
+  // and the number of cards on screen (i.e. the current level)
+  let iconFontSize;
+  if (level < 3) {
+    iconFontSize = cardWidth * 0.5;
+  } else {
+    iconFontSize = cardWidth * 0.7;
+  }
+  // Update the card opening and closing keyframes with the new icon font size
+  keyframesFlipCardOpen[2].fontSize = `${iconFontSize}px`;
+  keyframesFlipCardOpen[3].fontSize = `${iconFontSize}px`;
+  keyframesFlipCardClose[0].fontSize = `${iconFontSize}px`;
+  keyframesFlipCardClose[1].fontSize = `${iconFontSize}px`;
+}
+
 // Update the contents of the game over modal based on the current status
 // of the game (game won/loss state, number of stars, number of moves, and
 // time taken)
@@ -786,6 +859,8 @@ function restartGame() {
   arrayOfPossibleSymbols = getIconSetArray(dropdownIconSetSelect, arraysOfIconSets);
   // Create a new deck of cards and add this to the HTML
   updateHTMLWithNewCardDeck(numOfCards);
+  // Resize the cards based on the level
+  changeCardSizesBasedOnLevel(levelIndex);
 }
 
 // Show/hide the game over modal
@@ -913,3 +988,9 @@ dropdownDifficultySelect.addEventListener('change', function() {
   doNotChangeLevel = false;
   restartGame();
 });
+
+// Whenever the window gets resized, change the sizes of the cards to fit
+// within the window's current size
+window.addEventListener('resize', function() {
+  changeCardSizesBasedOnLevel(levelIndex);
+})
