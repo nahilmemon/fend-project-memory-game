@@ -351,7 +351,7 @@ select {
   left: 50%;
   width: 90vw;
   max-width: 630px;
-  max-height: 90vh;
+  height: auto;
   z-index: 2000;
   visibility: hidden;
   -webkit-backface-visibility: hidden;
