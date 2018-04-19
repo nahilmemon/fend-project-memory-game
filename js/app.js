@@ -394,9 +394,9 @@ function updateStarList(boundariesArray, numOfMoves, listOfStars, starIndex, num
   // should all affect the number of stars left
   let numOfMovesAndHints;
   if (difficultySetting == 0) {
-    numOfMovesAndHints = numOfMoves;
-  } else if (difficultySetting == 1) {
     numOfMovesAndHints = numOfMoves + numOfHints*1;
+  } else if (difficultySetting == 1) {
+    numOfMovesAndHints = numOfMoves + numOfHints*2;
   } else {
     numOfMovesAndHints = numOfMoves + numOfHints*3;
   }
