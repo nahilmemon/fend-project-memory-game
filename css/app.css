@@ -147,7 +147,6 @@ body {
   left: 0;
   z-index: 1000;
   opacity: 0;
-  background: rgba(0,127,108,0.8);
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   -ms-transition: all 0.3s;
@@ -183,8 +182,6 @@ body {
 
 /* Modal Content */
 .modal-content {
-  color: #fff;
-  background: #006656;
   position: relative;
   border-radius: 3px;
   margin: 0 auto;
@@ -195,8 +192,6 @@ body {
 /* Modal Header */
 .modal-header {
   text-align: center;
-  opacity: 0.8;
-  background: rgba(0,0,0,0.1);
   border-radius: 3px 3px 0 0;
   padding: 1em;
 }
@@ -221,16 +216,12 @@ body {
 /* Modal Footer */
 .modal-footer {
   padding: 1em;
-  opacity: 0.8;
-  background: rgba(0,0,0,0.1);
 }
 
 /* Modal Buttons */
 .modal-button {
   border: none;
   padding: 0.6em 1.2em;
-  background: #004c41;
-  color: #fff;
   letter-spacing: 1px;
   text-transform: uppercase;
   border-radius: 2px;
@@ -238,6 +229,54 @@ body {
   cursor: pointer;
   display: block;
   margin: 0 auto;
+}
+
+/*
+ * Color classes for different modal states
+ */
+ /* Game overall lost */
+.game-lost-overlay {
+  background: #f96276cc;
+}
+
+.game-lost {
+  background: #fff;
+  color: #f96276;
+}
+
+.game-lost-inverted {
+  background: #f96276;
+  color: #fff;
+}
+
+/* Game level won */
+.level-won-overlay {
+  background: #ae92b7cc;
+}
+
+.level-won {
+  background: #fff;
+  color: #ae92b7;
+}
+
+.level-won-inverted {
+  background: #ae92b7;
+  color: #fff;
+}
+
+/* Game overall won*/
+.game-won-overlay {
+  background: #62c2f9cc;
+}
+
+.game-won {
+  background: #fff;
+  color: #62c2f9;
+}
+
+.game-won-inverted {
+  background: #62c2f9;
+  color: #fff;
 }
 
 /*

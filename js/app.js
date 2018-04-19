@@ -104,6 +104,8 @@ const modalHintsUsedSpan = modalGameOver.querySelector('.hints-used');
 const dropdownIconSetSelect = document.querySelector('.dropdown.icon-set');
 const dropdownDifficultySelect = document.querySelector('.dropdown.difficulty');
 const levelSpan = document.querySelector('.level');
+const modalOverlay = document.querySelector('.modal-overlay');
+const modalGameOverBody = modalGameOver.querySelector('.modal-body');
 
 // --- Animation Helpers --- //
 // Keyframes
@@ -659,10 +661,61 @@ function changeCardSizesBasedOnLevel(level) {
   keyframesFlipCardClose[1].fontSize = `${iconFontSize}px`;
 }
 
+// Change the color palette of the game over modal based on whether the user
+// won the level, won the overall game, or lost the overall game
+function changeModalColorPalette(gameWon, levelWon) {
+  if (levelWon == true) {
+    // The user won the whole game
+    if (gameWon == true) {
+      modalOverlay.classList.remove('level-won-overlay', 'game-lost-overlay');
+      modalOverlay.classList.add('game-won-overlay');
+
+      modalGameOver.classList.remove('level-won-inverted', 'game-lost-inverted');
+      modalGameOver.classList.add('game-won-inverted');
+
+      modalGameOverBody.classList.remove('level-won', 'game-lost');
+      modalGameOverBody.classList.add('game-won');
+      modalRestartButton.classList.remove('level-won', 'game-lost');
+      modalRestartButton.classList.add('game-won');
+      modalNextLevelButton.classList.remove('level-won', 'game-lost');
+      modalNextLevelButton.classList.add('game-won');
+    } else { // The user won only the level
+      modalOverlay.classList.remove('game-lost-overlay', 'game-won-overlay');
+      modalOverlay.classList.add('level-won-overlay');
+
+      modalGameOver.classList.remove('game-lost-inverted', 'game-won-inverted');
+      modalGameOver.classList.add('level-won-inverted');
+
+      modalGameOverBody.classList.remove('game-lost', 'game-won');
+      modalGameOverBody.classList.add('level-won');
+      modalRestartButton.classList.remove('game-lost', 'game-won');
+      modalRestartButton.classList.add('level-won');
+      modalNextLevelButton.classList.remove('game-lost', 'game-won');
+      modalNextLevelButton.classList.add('level-won');
+    }
+  } else { // The user lost the game
+    modalOverlay.classList.remove('level-won-overlay', 'game-won-overlay');
+    modalOverlay.classList.add('game-lost-overlay');
+
+    modalGameOver.classList.remove('level-won-inverted', 'game-won-inverted');
+    modalGameOver.classList.add('game-lost-inverted');
+
+    modalGameOverBody.classList.remove('level-won', 'game-won');
+    modalGameOverBody.classList.add('game-lost');
+    modalRestartButton.classList.remove('level-won', 'game-won');
+    modalRestartButton.classList.add('game-lost');
+    modalNextLevelButton.classList.remove('level-won', 'game-won');
+    modalNextLevelButton.classList.add('game-lost');
+  }
+}
+
 // Update the contents of the game over modal based on the current status
 // of the game (game won/loss state, number of stars, number of moves, and
 // time taken)
 function updateGameOverModalContents() {
+  // Change the color palette of the modal based on whether the level and/or
+  // game was won/lost
+  changeModalColorPalette(gameOverallWon, gameLevelWon);
   // Change the game over title sentence based on whether the level and/or game
   // was won
   // Check if the user won the current level of the game
@@ -1005,4 +1058,4 @@ dropdownDifficultySelect.addEventListener('change', function() {
 // within the window's current size
 window.addEventListener('resize', function() {
   changeCardSizesBasedOnLevel(levelIndex);
-})
+});
