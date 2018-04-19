@@ -84,6 +84,10 @@ const arraysOfIconSets = [
 ];
 let doNotChangeLevel = false;
 let arraysOfAnimationPlayers = [[], [], [], []]; // 0: opening, 1: closing, 2: matching, 3: hinting
+const cardBackColor = '#987f64';
+const cardFrontColor = '#ae92b7';
+const cardMatchColor = '#75b6e8';
+const cardHintColor = '#e7916e';
 
 // --- Selectors --- //
 const cardDeck = document.querySelector('.deck');
@@ -110,21 +114,21 @@ const modalGameOverBody = modalGameOver.querySelector('.modal-body');
 // --- Animation Helpers --- //
 // Keyframes
 let keyframesFlipCardOpen = [
-  { transform: 'rotateY(180deg)', background: '#2e3d49', fontSize: '0' },
-  { background: '#2e3d49', fontSize: '0', offset: 0.5 },
-  { background: '#02b3e4', fontSize: '33px', offset: 0.50001 },
-  { transform: 'rotateY(0deg)', background: '#02b3e4', fontSize: '33px' }
+  { transform: 'rotateY(180deg)', background: cardBackColor, fontSize: '0' },
+  { background: cardBackColor, fontSize: '0', offset: 0.5 },
+  { background: cardFrontColor, fontSize: '33px', offset: 0.50001 },
+  { transform: 'rotateY(0deg)', background: cardFrontColor, fontSize: '33px' }
 ];
 let keyframesFlipCardClose = [
-  { transform: 'rotateY(0deg)', background: '#02b3e4', fontSize: '33px' },
-  { background: '#02b3e4', fontSize: '33px', offset: 0.5 },
-  { background: '#2e3d49', fontSize: '0', offset: 0.50001 },
-  { transform: 'rotateY(180deg)', background: '#2e3d49', fontSize: '0' }
+  { transform: 'rotateY(0deg)', background: cardFrontColor, fontSize: '33px' },
+  { background: cardFrontColor, fontSize: '33px', offset: 0.5 },
+  { background: cardBackColor, fontSize: '0', offset: 0.50001 },
+  { transform: 'rotateY(180deg)', background: cardBackColor, fontSize: '0' }
 ];
 // The following two keyframe details have been taken from
 // http://www.theappguruz.com/tag-tools/web/CSSAnimations/
 const keyframesMatch = [
- { transform: 'scale3d(1, 1, 1)', background: '#02b3e4' },
+ { transform: 'scale3d(1, 1, 1)', background: cardFrontColor },
  { transform: 'scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg)', offset: 0.1 },
  { transform: 'scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg)', offset: 0.2 },
  { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.3 },
@@ -134,20 +138,20 @@ const keyframesMatch = [
  { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.7 },
  { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg)', offset: 0.8 },
  { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.9 },
- { transform: 'scale3d(1, 1, 1)', background: '#02ccba' }
+ { transform: 'scale3d(1, 1, 1)', background: cardMatchColor }
 ];
 const keyframesHint = [
- { transform: 'translate3d(0, 0, 0)', background: '#2e3d49' },
+ { transform: 'translate3d(0, 0, 0)', background: cardBackColor },
  { transform: 'translate3d(-10px, 0, 0)', offset: 0.1 },
  { transform: 'translate3d(10px, 0, 0)', offset: 0.2 },
  { transform: 'translate3d(-10px, 0, 0)', offset: 0.3 },
  { transform: 'translate3d(10px, 0, 0)', offset: 0.4 },
- { transform: 'translate3d(-10px, 0, 0)', background: '#fd356e', offset: 0.5 },
+ { transform: 'translate3d(-10px, 0, 0)', background: cardHintColor, offset: 0.5 },
  { transform: 'translate3d(10px, 0, 0)', offset: 0.6 },
  { transform: 'translate3d(-10px, 0, 0)', offset: 0.7 },
  { transform: 'translate3d(10px, 0, 0)', offset: 0.8 },
  { transform: 'translate3d(-10px, 0, 0)', offset: 0.9 },
- { transform: 'translate3d(0, 0, 0)', background: '#2e3d49' }
+ { transform: 'translate3d(0, 0, 0)', background: cardBackColor }
 ];
 // Timing
 const timingShowHint = {
