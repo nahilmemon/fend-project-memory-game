@@ -22,115 +22,73 @@
 </head>
 <body>
   <!-- Page/Game Container -->
-  <div class="container flex-container flex-justify-center flex-align-center flex-direction-column">
-    <!-- Header -->
-    <header>
-      <h1>Match Up!</h1>
-    </header>
+  <div class="container flex-container">
+    <!-- Game Info -->
+    <section class="left-half">
+      <!-- Header -->
+      <header>
+        <h1>Match Up!</h1>
+      </header>
 
-    <!-- Game Statistics and Buttons -->
-    <section class="score-panel flex-container flex-justify-space-between">
-      <!-- Level -->
-      <div>Level <span class="level">1</span></div>
+      <!-- Game Statistics and Buttons -->
+      <section class="score-panel panel flex-container">
+        <!-- Level -->
+        <div class="level-div">Level <span class="level">1</span></div>
 
-      <!-- Star counter -->
-      <ul class="stars">
-        <li><i class="fas fa-star"></i></li>
-        <li><i class="fas fa-star"></i></li>
-        <li><i class="fas fa-star"></i></li>
+        <!-- Star counter -->
+        <ul class="stars">
+          <li><i class="fas fa-star"></i></li>
+          <li><i class="fas fa-star"></i></li>
+          <li><i class="fas fa-star"></i></li>
+        </ul>
+
+        <!-- Number of moves counter -->
+        <div class="moves-div"><span class="moves">0</span> Moves</div>
+
+        <!-- Countdown timer -->
+        <div class="countdown-div"><span class="countdown-timer">10</span> s</div>
+      </section>
+
+      <section class="options-panel panel flex-container">
+        <!-- Hint button -->
+        <button class="hint unstyled-button">
+          <span class="hints-left">0</span>
+          <i class="fas fa-search"></i>
+        </button>
+
+        <!-- Icon sets dropdown -->
+        <select class="dropdown icon-set">
+          <option value="0">Nature</option>
+          <option class="options" value="1">Logistics</option>
+          <option value="2">Sports</option>
+          <option value="3">Places</option>
+          <option value="4">Technology</option>
+          <option value="5">Medical</option>
+          <option value="6">Transport</option>
+          <option value="7">Money</option>
+          <option value="8">Hand Signs</option>
+        </select>
+
+        <!-- Difficulty settings dropdown -->
+        <select class="dropdown difficulty">
+          <option value="0">Easy</option>
+          <option value="1">Medium</option>
+          <option value="2">Hard</option>
+        </select>
+
+        <!-- Restart button -->
+        <button class="restart unstyled-button">
+          <i class="fas fa-redo"></i>
+        </button>
+      </section>
+    </section>
+
+    <!-- Game Board -->
+    <section class="right-half">
+      <!-- Card Deck -->
+      <ul class="deck flex-container flex-justify-space-between flex-align-center">
       </ul>
-
-      <!-- Number of moves counter -->
-      <div><span class="moves">0</span> Moves</div>
-
-      <!-- Countdown timer -->
-      <div><span class="countdown-timer">10</span> s</div>
     </section>
-
-    <section class="options-panel flex-container flex-justify-space-between">
-      <!-- Hint button -->
-      <button class="hint unstyled-button">
-        <span class="hints-left">0</span>
-        <i class="fas fa-search"></i>
-      </button>
-
-      <!-- Icon sets dropdown -->
-      <select class="dropdown icon-set">
-        <option value="0">Nature</option>
-        <option value="1">Logistics</option>
-        <option value="2">Sports</option>
-        <option value="3">Places</option>
-        <option value="4">Technology</option>
-        <option value="5">Medical</option>
-        <option value="6">Transport</option>
-        <option value="7">Money</option>
-        <option value="8">Hand Signs</option>
-      </select>
-
-      <!-- Difficulty settings dropdown -->
-      <select class="dropdown difficulty">
-        <option value="0">Easy</option>
-        <option value="1">Medium</option>
-        <option value="2">Hard</option>
-      </select>
-
-      <!-- Restart button -->
-      <button class="restart unstyled-button">
-        <i class="fas fa-redo"></i>
-      </button>
-    </section>
-
-    <!-- Card Deck -->
-    <ul class="deck flex-container flex-justify-space-between flex-align-center">
-      <!-- <li class="card">
-        <i class="fas fa-diamond"></i>
-      </li>
-      <li class="card">
-        <i class="fas fa-paper-plane-o"></i>
-      </li>
-      <li class="card match">
-        <i class="fas fa-anchor"></i>
-      </li>
-      <li class="card">
-        <i class="fas fa-bolt"></i>
-      </li>
-      <li class="card">
-        <i class="fas fa-cube"></i>
-      </li>
-      <li class="card match">
-        <i class="fas fa-anchor"></i>
-      </li>
-      <li class="card">
-        <i class="fas fa-leaf"></i>
-      </li>
-      <li class="card">
-        <i class="fas fa-bicycle"></i>
-      </li>
-      <li class="card">
-        <i class="fas fa-diamond"></i>
-      </li>
-      <li class="card">
-        <i class="fas fa-bomb"></i>
-      </li>
-      <li class="card">
-        <i class="fas fa-leaf"></i>
-      </li>
-      <li class="card">
-        <i class="fas fa-bomb"></i>
-      </li>
-      <li class="card open show">
-        <i class="fas fa-bolt"></i>
-      </li>
-      <li class="card">
-        <i class="fas fa-bicycle"></i>
-      </li>
-      <li class="card">
-        <i class="fas fa-paper-plane-o"></i>
-      </li>
-      <li class="card">
-        <i class="fas fa-cube"></i>
-      </li> -->
-    </ul>
 
     <!-- Game Over Modal -->
     <section class="modal modal-effect-1" id="modal-game-over">

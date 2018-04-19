@@ -616,13 +616,28 @@ function changeCardSizesBasedOnLevel(level) {
   const scorePanelMarginBot = 10;
   const optionsPanelHeight = document.querySelector('.options-panel').getBoundingClientRect().height;
   const optionsPanelMarginBot = 10;
+  const leftHalfSectionWidth = document.querySelector('.left-half').getBoundingClientRect().width;
+
   // The deckWidth is 100vw - the horizontal padding and margin
-  deckWidth = window.innerWidth - (deckPaddingX*2 + deckMarginX*2);
+  // (and - left half's width depending on the page layout)
   // The deckHeight is 100vh - (the vertical padding and margin + the height of
-  // all the other elements on the screen above the deck)
-  deckHeight = window.innerHeight - (headerHeight + scorePanelHeight +
+  // all the other elements on the screen above the deck depending on the layout)
+  // Landscape mode
+  if (window.innerWidth < 769 && window.innerWidth > window.innerHeight) {
+    deckWidth = window.innerWidth - (deckPaddingX*2 + deckMarginX*2 + leftHalfSectionWidth);
+    deckHeight = window.innerHeight - (deckPaddingY*2 + deckMarginY);
+    console.log(window.innerHeight);
+    console.log(deckHeight);
+  }
+  // Portrait mode
+  else {
+    deckWidth = window.innerWidth - (deckPaddingX*2 + deckMarginX*2);
+    deckHeight = window.innerHeight - (headerHeight + scorePanelHeight +
     scorePanelMarginBot + optionsPanelHeight + optionsPanelMarginBot + deckPaddingY*2
     + deckMarginY);
+  }
+
+
 
   // The deck should be a square, so let the smaller length (between deckWidth
   // and deckHeight) dictate the final dimensions of the deck
@@ -643,6 +658,9 @@ function changeCardSizesBasedOnLevel(level) {
   // The card size is thus the amount of space left over / the number of cards per row
   cardWidth = (deckWidth - totalSpacingBetweenCardsPerRow - deckPaddingX * 2)/numOfCardsPerRow;
 
+  // Add the padding to the deck dimensions
+  deckWidth += deckPaddingX*2;
+  deckHeight += deckPaddingY*2
   // Set the deck size's css based on the calculated dimensions above
   cardDeck.setAttribute('style', `width: ${deckWidth}px; height: ${deckHeight}px; padding: ${deckPaddingX}px ${deckPaddingY}px;`);
   // Set each card's dimensions and margin based on the calculations above
