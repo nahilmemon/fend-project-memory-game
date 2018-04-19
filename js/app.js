@@ -109,7 +109,9 @@ const dropdownIconSetSelect = document.querySelector('.dropdown.icon-set');
 const dropdownDifficultySelect = document.querySelector('.dropdown.difficulty');
 const levelSpan = document.querySelector('.level');
 const modalOverlay = document.querySelector('.modal-overlay');
+const modalGameOverHeader = modalGameOver.querySelector('.modal-header');
 const modalGameOverBody = modalGameOver.querySelector('.modal-body');
+const modalGameOverFooter = modalGameOver.querySelector('.modal-footer');
 
 // --- Animation Helpers --- //
 // Keyframes
@@ -692,8 +694,10 @@ function changeModalColorPalette(gameWon, levelWon) {
       modalOverlay.classList.remove('level-won-overlay', 'game-lost-overlay');
       modalOverlay.classList.add('game-won-overlay');
 
-      modalGameOver.classList.remove('level-won-inverted', 'game-lost-inverted');
-      modalGameOver.classList.add('game-won-inverted');
+      modalGameOverHeader.classList.remove('level-won-inverted', 'game-lost-inverted');
+      modalGameOverHeader.classList.add('game-won-inverted');
+      modalGameOverFooter.classList.remove('level-won-inverted', 'game-lost-inverted');
+      modalGameOverFooter.classList.add('game-won-inverted');
 
       modalGameOverBody.classList.remove('level-won', 'game-lost');
       modalGameOverBody.classList.add('game-won');
@@ -705,8 +709,10 @@ function changeModalColorPalette(gameWon, levelWon) {
       modalOverlay.classList.remove('game-lost-overlay', 'game-won-overlay');
       modalOverlay.classList.add('level-won-overlay');
 
-      modalGameOver.classList.remove('game-lost-inverted', 'game-won-inverted');
-      modalGameOver.classList.add('level-won-inverted');
+      modalGameOverHeader.classList.remove('game-lost-inverted', 'game-won-inverted');
+      modalGameOverHeader.classList.add('level-won-inverted');
+      modalGameOverFooter.classList.remove('game-lost-inverted', 'game-won-inverted');
+      modalGameOverFooter.classList.add('level-won-inverted');
 
       modalGameOverBody.classList.remove('game-lost', 'game-won');
       modalGameOverBody.classList.add('level-won');
@@ -719,8 +725,10 @@ function changeModalColorPalette(gameWon, levelWon) {
     modalOverlay.classList.remove('level-won-overlay', 'game-won-overlay');
     modalOverlay.classList.add('game-lost-overlay');
 
-    modalGameOver.classList.remove('level-won-inverted', 'game-won-inverted');
-    modalGameOver.classList.add('game-lost-inverted');
+    modalGameOverHeader.classList.remove('level-won-inverted', 'game-won-inverted');
+    modalGameOverHeader.classList.add('game-lost-inverted');
+    modalGameOverFooter.classList.remove('level-won-inverted', 'game-won-inverted');
+    modalGameOverFooter.classList.add('game-lost-inverted');
 
     modalGameOverBody.classList.remove('level-won', 'game-won');
     modalGameOverBody.classList.add('game-lost');
