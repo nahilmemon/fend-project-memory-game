@@ -624,8 +624,6 @@ function changeCardSizesBasedOnLevel(level) {
   if (window.innerWidth < 769 && window.innerWidth > window.innerHeight) {
     deckWidth = window.innerWidth - (deckPaddingX*2 + deckMarginX*2 + leftHalfSectionWidth);
     deckHeight = window.innerHeight - (deckPaddingY*2 + deckMarginY);
-    console.log(window.innerHeight);
-    console.log(deckHeight);
   }
   // Portrait mode
   else {
