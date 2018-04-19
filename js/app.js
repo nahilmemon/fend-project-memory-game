@@ -613,12 +613,8 @@ function changeCardSizesBasedOnLevel(level) {
   }
   const deckMarginX = 2; // horizontal margin
   const deckMarginY = 2; // vertical margin
-  const headerHeight = document.querySelector('header').getBoundingClientRect().height;
-  const scorePanelHeight = document.querySelector('.score-panel').getBoundingClientRect().height;;
-  const scorePanelMarginBot = 10;
-  const optionsPanelHeight = document.querySelector('.options-panel').getBoundingClientRect().height;
-  const optionsPanelMarginBot = 10;
   const leftHalfSectionWidth = document.querySelector('.left-half').getBoundingClientRect().width;
+  const leftHalfSectionHeight = document.querySelector('.left-half').getBoundingClientRect().height;
 
   // The deckWidth is 100vw - the horizontal padding and margin
   // (and - left half's width depending on the page layout)
@@ -634,12 +630,8 @@ function changeCardSizesBasedOnLevel(level) {
   // Portrait mode
   else {
     deckWidth = window.innerWidth - (deckPaddingX*2 + deckMarginX*2);
-    deckHeight = window.innerHeight - (headerHeight + scorePanelHeight +
-    scorePanelMarginBot + optionsPanelHeight + optionsPanelMarginBot + deckPaddingY*2
-    + deckMarginY);
+    deckHeight = window.innerHeight - (deckPaddingY*2 + deckMarginY*2 + leftHalfSectionHeight);
   }
-
-
 
   // The deck should be a square, so let the smaller length (between deckWidth
   // and deckHeight) dictate the final dimensions of the deck
