@@ -20,11 +20,6 @@ body {
   padding: 0;
 }
 
-body {
-  /* Background pattern from Subtle Patterns */
-  background: #fff url('../img/xv.png');
-}
-
 /*
  * Styles for the deck of cards
  */
@@ -57,14 +52,13 @@ body {
 }
 
 /*
- * Styles for the Game Statistics and Buttons Section
+ * Styles for the Score and Options Panels
  */
 .score-panel,
 .options-panel {
   text-align: left;
   width: 350px;
   margin-bottom: 10px;
-  height: 20px;
 }
 
 @media screen and (max-width:360px) {
@@ -72,6 +66,11 @@ body {
   .options-panel {
     width: 310px;
   }
+}
+
+button,
+select {
+  color: #987f64;
 }
 
 @media screen and (max-width: 728px) {
@@ -351,7 +350,14 @@ h6 {
 }
 
 body {
-  font: 1em/1.25 'Montserrat', Verdana, sans-serif;
+  font: 600 1em/1.25 'Montserrat', Verdana, sans-serif;
+  color: #987f64;
+  /* Background pattern from Subtle Patterns */
+  background: #fff url('../img/xv.png');
+}
+
+select option {
+  font-weight: 600;
 }
 
 h1 {
