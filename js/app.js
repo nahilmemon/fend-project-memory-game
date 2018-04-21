@@ -853,6 +853,17 @@ function getDropdownValue(dropdownSelector) {
   return dropdownValue;
 }
 
+// Change the color of the dropdown <select> based on the color of the
+// selected option
+function changeDropdownSelectColor(dropdownSelector) {
+  // Get the classList of the option that is currently selected
+  const selectedOptionClassList = dropdownSelector.options[dropdownSelector.selectedIndex].classList;
+  // Remove all the classes currently acting on the dropdown <select>
+  dropdownSelector.classList.remove('easy', 'medium', 'hard');
+  // Add the class of the currently selected option to the dropdown <select>
+  dropdownSelector.classList.add(selectedOptionClassList[0]);
+}
+
 // Get the icon set array of icon classes based on the selected option
 // in the icon set dropdown
 function getIconSetArray(dropdownSelector, arraysOfIconSets) {
@@ -860,6 +871,11 @@ function getIconSetArray(dropdownSelector, arraysOfIconSets) {
   const dropdownIconSetValue = getDropdownValue(dropdownSelector);
   // Get the corresponding array of icon classes based on this value
   const arrayOfSymbols = arraysOfIconSets[dropdownIconSetValue];
+
+  // Change the color of dropdown <select> based on the color of the
+  // option selected
+  changeDropdownSelectColor(dropdownSelector);
+
   return arrayOfSymbols;
 }
 
@@ -868,6 +884,11 @@ function getIconSetArray(dropdownSelector, arraysOfIconSets) {
 function getDifficultySetting(dropdownSelector) {
   // Get the value of the selected option in the difficulty setting dropdown
   const difficultySetting = getDropdownValue(dropdownSelector);
+
+  // Change the color of dropdown <select> based on the color of the
+  // option selected
+  changeDropdownSelectColor(dropdownSelector);
+
   return difficultySetting;
 }
 

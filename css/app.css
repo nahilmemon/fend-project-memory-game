@@ -306,6 +306,18 @@ select {
   cursor: pointer;
 }
 
+.easy {
+  color: #75b6e8;
+}
+
+.medium {
+  color: #ae92b7;
+}
+
+.hard {
+  color: #f96276;
+}
+
 /*
  * Styles for the deck of cards
  */
