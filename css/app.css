@@ -390,7 +390,7 @@ select {
 
 /* Modal Opening/Closing Effect:
    Fade in and scale up */
-.modal-effect-1 .modal-content {
+.modal-effect .modal-content {
   -webkit-transform: scale(0.7);
   -moz-transform: scale(0.7);
   -ms-transform: scale(0.7);
@@ -402,7 +402,7 @@ select {
   transition: all 0.3s;
 }
 
-.modal-show.modal-effect-1 .modal-content {
+.modal-show.modal-effect .modal-content {
   -webkit-transform: scale(1);
   -moz-transform: scale(1);
   -ms-transform: scale(1);
