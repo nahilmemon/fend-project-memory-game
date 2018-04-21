@@ -315,7 +315,7 @@ select {
 }
 
 .hard {
-  color: #f96276;
+  color: #e8757d;
 }
 
 /*
@@ -493,16 +493,16 @@ select {
  */
 /* Game overall lost */
 .game-lost-overlay {
-  background: #f96276cc;
+  background: #e8757dcc;
 }
 
 .game-lost {
   background: #fff;
-  color: #f96276;
+  color: #e8757d;
 }
 
 .game-lost-inverted {
-  background: #f96276;
+  background: #e8757d;
   color: #fff;
 }
 
