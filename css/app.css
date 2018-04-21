@@ -493,7 +493,7 @@ select {
  */
 /* Game overall lost */
 .game-lost-overlay {
-  background: #e8757dcc;
+  background: rgba(232, 117, 125, 204);
 }
 
 .game-lost {
@@ -508,7 +508,7 @@ select {
 
 /* Game level won */
 .level-won-overlay {
-  background: #ae92b7cc;
+  background: rgba(174, 146, 183, 204);
 }
 
 .level-won {
@@ -523,7 +523,7 @@ select {
 
 /* Game overall won*/
 .game-won-overlay {
-  background: #62c2f9cc;
+  background: rgba(98, 194, 249, 204);
 }
 
 .game-won {
