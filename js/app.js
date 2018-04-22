@@ -654,8 +654,8 @@ function changeCardSizesBasedOnLevel(level) {
   // Change the padding of the deck based on the number of cards since the match
   // animation takes up a lot of space for larger sized cards
   if (level < 3) {
-    deckPaddingX = 15; // horizontal padding
-    deckPaddingY = 15; // vertical padding
+    deckPaddingX = 20; // horizontal padding
+    deckPaddingY = 20; // vertical padding
   } else {
     deckPaddingX = 5; // horizontal padding
     deckPaddingY = 5; // vertical padding
