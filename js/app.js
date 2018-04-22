@@ -19,13 +19,13 @@ let arraysOfLevelTimeLimits = [
   [9000, 22000, 39000, 75000, 130000],
   [6000, 13000, 29000, 55000, 100000]
 ]; // in units of ms
-const levelMaxIndex = arrayOfLevelDeckSizes.length - 1;
+const LEVEL_MAX_INDEX = arrayOfLevelDeckSizes.length - 1;
 let numOfCards = arrayOfLevelDeckSizes[levelIndex];
 let gameTimeLimit = arraysOfLevelTimeLimits[difficulty][levelIndex]; // in units of ms
 let resetGame = true;
 let hintCounter = 0;
 let hintsLeftCounter = 0;
-const arraysOfIconSets = [
+const ARRAYS_OF_ICON_SETS = [
   [
     'fa-bolt', 'fa-sun', 'fa-cloud', 'fa-tint', 'fa-umbrella', 'fa-snowflake',
     'fa-moon', 'fa-leaf', 'fa-tree', 'fa-seedling', 'fa-fire'
@@ -84,53 +84,53 @@ const arraysOfIconSets = [
 ];
 let doNotChangeLevel = false;
 let arraysOfAnimationPlayers = [[], [], [], []]; // 0: opening, 1: closing, 2: matching, 3: hinting
-const cardBackColor = '#987f64';
-const cardFrontColor = '#ae92b7';
-const cardMatchColor = '#75b6e8';
-const cardHintColor = '#e7916e';
+const CARD_BACK_COLOR = '#987f64';
+const CARD_FRONT_COLOR = '#ae92b7';
+const CARD_MATCH_COLOR = '#75b6e8';
+const CARD_HINT_COLOR = '#e7916e';
 
 // --- Selectors --- //
-const cardDeck = document.querySelector('.deck');
-const restartButton = document.querySelector('.restart');
-const movesCounterSpan = document.querySelector('.moves');
-const countdownTimerSpan = document.querySelector('.countdown-timer');
-const starList = document.querySelector('.stars');
-const modalGameOver = document.querySelector('#modal-game-over');
-const modalRestartButton = document.querySelector('.modal-restart-button');
-const modalGameOverTitle = modalGameOver.querySelector('.game-over-title');
-const modalStarList = modalGameOver.querySelector('.modal-stars');
-const modalMovesCounterSpan = modalGameOver.querySelector('.moves');
-const modalTimeRemainingSpan = modalGameOver.querySelector('.time-taken');
-const modalNextLevelButton = modalGameOver.querySelector('.modal-next-level-button');
-const hintButton = document.querySelector('.hint');
-const hintsLeftSpan = document.querySelector('.hints-left');
-const modalHintsUsedSpan = modalGameOver.querySelector('.hints-used');
-const dropdownIconSetSelect = document.querySelector('.dropdown.icon-set');
-const dropdownDifficultySelect = document.querySelector('.dropdown.difficulty');
-const levelSpan = document.querySelector('.level');
-const modalOverlay = document.querySelector('.modal-overlay');
-const modalGameOverHeader = modalGameOver.querySelector('.modal-header');
-const modalGameOverBody = modalGameOver.querySelector('.modal-body');
-const modalGameOverFooter = modalGameOver.querySelector('.modal-footer');
+const CARD_DECK = document.querySelector('.deck');
+const RESTART_BUTTON = document.querySelector('.restart');
+const MOVES_COUNTER_SPAN = document.querySelector('.moves');
+const COUNTDOWN_TIMER_SPAN = document.querySelector('.countdown-timer');
+const STAR_LIST = document.querySelector('.stars');
+const MODAL_GAME_OVER = document.querySelector('#modal-game-over');
+const MODAL_RESTART_BUTTON = document.querySelector('.modal-restart-button');
+const MODAL_GAME_OVER_TITLE = MODAL_GAME_OVER.querySelector('.game-over-title');
+const MODAL_STAR_LIST = MODAL_GAME_OVER.querySelector('.modal-stars');
+const MODAL_MOVES_COUNTER_SPAN = MODAL_GAME_OVER.querySelector('.moves');
+const MODAL_TIME_REMAINING_SPAN = MODAL_GAME_OVER.querySelector('.time-taken');
+const MODAL_NEXT_LEVEL_BUTTON = MODAL_GAME_OVER.querySelector('.modal-next-level-button');
+const HINT_BUTTON = document.querySelector('.hint');
+const HINTS_LEFT_SPAN = document.querySelector('.hints-left');
+const MODAL_HINTS_USED_SPAN = MODAL_GAME_OVER.querySelector('.hints-used');
+const DROPDOWN_ICON_SET_SELECT = document.querySelector('.dropdown.icon-set');
+const DROPDOWN_DIFFICULTY_SELECT = document.querySelector('.dropdown.difficulty');
+const LEVEL_SPAN = document.querySelector('.level');
+const MODAL_OVERLAY = document.querySelector('.modal-overlay');
+const MODAL_GAME_OVER_HEADER = MODAL_GAME_OVER.querySelector('.modal-header');
+const MODAL_GAME_OVER_BODY = MODAL_GAME_OVER.querySelector('.modal-body');
+const MODAL_GAME_OVER_FOOTER = MODAL_GAME_OVER.querySelector('.modal-footer');
 
 // --- Animation Helpers --- //
 // Keyframes
 let keyframesFlipCardOpen = [
-  { transform: 'rotateY(180deg)', background: cardBackColor, fontSize: '0' },
-  { background: cardBackColor, fontSize: '0', offset: 0.5 },
-  { background: cardFrontColor, fontSize: '33px', offset: 0.50001 },
-  { transform: 'rotateY(0deg)', background: cardFrontColor, fontSize: '33px' }
+  { transform: 'rotateY(180deg)', background: CARD_BACK_COLOR, fontSize: '0' },
+  { background: CARD_BACK_COLOR, fontSize: '0', offset: 0.5 },
+  { background: CARD_FRONT_COLOR, fontSize: '33px', offset: 0.50001 },
+  { transform: 'rotateY(0deg)', background: CARD_FRONT_COLOR, fontSize: '33px' }
 ];
 let keyframesFlipCardClose = [
-  { transform: 'rotateY(0deg)', background: cardFrontColor, fontSize: '33px' },
-  { background: cardFrontColor, fontSize: '33px', offset: 0.5 },
-  { background: cardBackColor, fontSize: '0', offset: 0.50001 },
-  { transform: 'rotateY(180deg)', background: cardBackColor, fontSize: '0' }
+  { transform: 'rotateY(0deg)', background: CARD_FRONT_COLOR, fontSize: '33px' },
+  { background: CARD_FRONT_COLOR, fontSize: '33px', offset: 0.5 },
+  { background: CARD_BACK_COLOR, fontSize: '0', offset: 0.50001 },
+  { transform: 'rotateY(180deg)', background: CARD_BACK_COLOR, fontSize: '0' }
 ];
 // The following two keyframe details have been taken from
 // http://www.theappguruz.com/tag-tools/web/CSSAnimations/
-const keyframesMatch = [
- { transform: 'scale3d(1, 1, 1)', background: cardFrontColor },
+const KEYFRAMES_MATCH = [
+ { transform: 'scale3d(1, 1, 1)', background: CARD_FRONT_COLOR },
  { transform: 'scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg)', offset: 0.1 },
  { transform: 'scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg)', offset: 0.2 },
  { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.3 },
@@ -140,35 +140,35 @@ const keyframesMatch = [
  { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.7 },
  { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg)', offset: 0.8 },
  { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.9 },
- { transform: 'scale3d(1, 1, 1)', background: cardMatchColor }
+ { transform: 'scale3d(1, 1, 1)', background: CARD_MATCH_COLOR }
 ];
-const keyframesHint = [
- { transform: 'translate3d(0, 0, 0)', background: cardBackColor },
+const KEYFRAMES_HINT = [
+ { transform: 'translate3d(0, 0, 0)', background: CARD_BACK_COLOR },
  { transform: 'translate3d(-10px, 0, 0)', offset: 0.1 },
  { transform: 'translate3d(10px, 0, 0)', offset: 0.2 },
  { transform: 'translate3d(-10px, 0, 0)', offset: 0.3 },
  { transform: 'translate3d(10px, 0, 0)', offset: 0.4 },
- { transform: 'translate3d(-10px, 0, 0)', background: cardHintColor, offset: 0.5 },
+ { transform: 'translate3d(-10px, 0, 0)', background: CARD_HINT_COLOR, offset: 0.5 },
  { transform: 'translate3d(10px, 0, 0)', offset: 0.6 },
  { transform: 'translate3d(-10px, 0, 0)', offset: 0.7 },
  { transform: 'translate3d(10px, 0, 0)', offset: 0.8 },
  { transform: 'translate3d(-10px, 0, 0)', offset: 0.9 },
- { transform: 'translate3d(0, 0, 0)', background: cardBackColor }
+ { transform: 'translate3d(0, 0, 0)', background: CARD_BACK_COLOR }
 ];
 // Timing
-const timingShowHint = {
+const TIMING_SHOW_HINT = {
   duration: 1000,
   fill: 'backwards'
 }
-const timingShowMatches = {
+const TIMING_SHOW_MATCHES = {
   duration: 1000,
   fill: 'both'
 }
-const timingFlipCardOpen = {
+const TIMING_FLIP_CARD_OPEN = {
   duration: 500,
   fill: 'both'
 }
-const timingFlipCardClose = {
+const TIMING_FLIP_CARD_CLOSE = {
   duration: 500,
   fill: 'both',
   delay: 500
@@ -208,7 +208,7 @@ function createNewCardDeckArray(arrayOfAllSymbols, sizeOfCardDeck) {
 // and add this new card deck to the deck ul list
 function updateHTMLWithNewCardDeck(sizeOfCardDeck) {
   // Delete the old card deck HTML
-  cardDeck.innerHTML = '';
+  CARD_DECK.innerHTML = '';
 
   // Create new card deck array
   const newCardDeckArray = createNewCardDeckArray(arrayOfPossibleSymbols, numOfCards);
@@ -223,7 +223,7 @@ function updateHTMLWithNewCardDeck(sizeOfCardDeck) {
     docFragment.appendChild(newCardElement);
   }
   // Add the new card deck HTML from the docFragment
-  cardDeck.appendChild(docFragment); // reflow and repaint here -- once!
+  CARD_DECK.appendChild(docFragment); // reflow and repaint here -- once!
 }
 
 // Shuffle the items in a given array
@@ -250,7 +250,7 @@ function revealCard(cardElement, arrayOfSelectedCards) {
   // Animate the given card to look like it's flipping open
   let cardOpeningPlayer = cardElement.animate(
     keyframesFlipCardOpen,
-    timingFlipCardOpen
+    TIMING_FLIP_CARD_OPEN
   );
 
   // Add the above animation player into the arraysOfAnimationPlayers[0]
@@ -274,12 +274,12 @@ function lockMatchedCards(cardElement1, cardElement2, arrayOfSelectedCards) {
     // Create the animation players for each card with the match
     // animation keyframes
     let cardMatchingPlayer1 = cardElement1.animate(
-      keyframesMatch,
-      timingShowMatches
+      KEYFRAMES_MATCH,
+      TIMING_SHOW_MATCHES
     );
     let cardMatchingPlayer2 = cardElement2.animate(
-      keyframesMatch,
-      timingShowMatches
+      KEYFRAMES_MATCH,
+      TIMING_SHOW_MATCHES
     );
 
     // Add these animation players into arraysOfAnimationPlayers[2]
@@ -316,11 +316,11 @@ function hideAndRemoveOpenedCards(cardElement1, cardElement2, arrayOfSelectedCar
     // animation keyframes and timing (which has an inherent 1 second delay)
     let cardClosingPlayer1 = cardElement1.animate(
       keyframesFlipCardClose,
-      timingFlipCardClose
+      TIMING_FLIP_CARD_CLOSE
     );
     let cardClosingPlayer2 = cardElement2.animate(
       keyframesFlipCardClose,
-      timingFlipCardClose
+      TIMING_FLIP_CARD_CLOSE
     );
 
     // Add these animation players into arraysOfAnimationPlayers[1]
@@ -470,8 +470,8 @@ function revealCardMatch(firstCard, secondCard, revealBothHints) {
   if (revealBothHints == true) {
     // Create an animation player with the hint animation keyframes
     let cardHintingPlayer1 = firstCard.animate(
-      keyframesHint,
-      timingShowHint
+      KEYFRAMES_HINT,
+      TIMING_SHOW_HINT
     );
 
     // Add this animation player into arraysOfAnimationPlayers[3]
@@ -482,8 +482,8 @@ function revealCardMatch(firstCard, secondCard, revealBothHints) {
   // Animate the second card with a hint animation
   // Create an animation player with the hint animation keyframes
   let cardHintingPlayer2 = secondCard.animate(
-    keyframesHint,
-    timingShowHint
+    KEYFRAMES_HINT,
+    TIMING_SHOW_HINT
   );
 
   // Add this animation player into arraysOfAnimationPlayers[3]
@@ -559,7 +559,7 @@ function findCardMatch() {
     revealCardMatch(firstCard, secondCard, showBothHints);
     // Update the values of the hints used counter and the hints left counter
     // and the text in hints left span in the score panel
-    [hintCounter, hintsLeftCounter] = updateHintsLeft(hintCounter, hintsLeftCounter, hintsLeftSpan);
+    [hintCounter, hintsLeftCounter] = updateHintsLeft(hintCounter, hintsLeftCounter, HINTS_LEFT_SPAN);
   }
 }
 
@@ -578,20 +578,20 @@ function updateCountdownTimer(timeGameStarted) {
   // Get the amount of time remaining to play the game
   const timeRemaining = gameTimeLimit - timeElapsed;
   // Update the HTML with the amount of time remaining
-  countdownTimerSpan.innerHTML = Math.round(timeRemaining/1000);
+  COUNTDOWN_TIMER_SPAN.innerHTML = Math.round(timeRemaining/1000);
   // Check if time ran out or if the game has finished
   isTheGameOverAndWon(timeRemaining);
 }
 
 // Reset the countdown timer in the score panel
 function resetCountdownTimer(countdownBeginningTime) {
-  countdownTimerSpan.innerHTML = Math.round(countdownBeginningTime/1000);
+  COUNTDOWN_TIMER_SPAN.innerHTML = Math.round(countdownBeginningTime/1000);
 }
 
 // Set the countdown timer in the score panel to 0
 function setCountdownTimerToZero() {
   // Update the score panel html count down timer to 0
-  countdownTimerSpan.innerHTML = 0;
+  COUNTDOWN_TIMER_SPAN.innerHTML = 0;
 }
 
 // When a card is clicked,
@@ -625,9 +625,9 @@ function processCardClick(event) {
     // then check if the clicked card matches the other card in the array
     if (arrayOfOpenedCards.length > 1) {
       // Update the number of moves counter
-      movesCounter = updateMovesCounter(movesCounter, movesCounterSpan);
+      movesCounter = updateMovesCounter(movesCounter, MOVES_COUNTER_SPAN);
       // Update the star list
-      starCounterIndex = updateStarList(starBoundaryArray, movesCounter, starList, starCounterIndex, hintCounter);
+      starCounterIndex = updateStarList(starBoundaryArray, movesCounter, STAR_LIST, starCounterIndex, hintCounter);
       // If the two cards match,
       // then lock the matched cards
       if (clickedCard.innerHTML == arrayOfOpenedCards[0].innerHTML) {
@@ -703,7 +703,7 @@ function changeCardSizesBasedOnLevel(level) {
   deckWidth += deckPaddingX*2;
   deckHeight += deckPaddingY*2
   // Set the deck size's css based on the calculated dimensions above
-  cardDeck.setAttribute('style', `width: ${deckWidth}px; height: ${deckHeight}px; padding: ${deckPaddingX}px ${deckPaddingY}px;`);
+  CARD_DECK.setAttribute('style', `width: ${deckWidth}px; height: ${deckHeight}px; padding: ${deckPaddingX}px ${deckPaddingY}px;`);
   // Set each card's dimensions and margin based on the calculations above
   for (let i=0; i<cards.length; i++) {
     cards[i].setAttribute('style', `width: ${cardWidth}px; height: ${cardWidth}px; margin: ${cardMarginOneSide}px;`);
@@ -730,51 +730,51 @@ function changeModalColorPalette(gameWon, levelWon) {
   if (levelWon == true) {
     // The user won the whole game
     if (gameWon == true) {
-      modalOverlay.classList.remove('level-won-overlay', 'game-lost-overlay');
-      modalOverlay.classList.add('game-won-overlay');
+      MODAL_OVERLAY.classList.remove('level-won-overlay', 'game-lost-overlay');
+      MODAL_OVERLAY.classList.add('game-won-overlay');
 
-      modalGameOverHeader.classList.remove('level-won-inverted', 'game-lost-inverted');
-      modalGameOverHeader.classList.add('game-won-inverted');
-      modalGameOverFooter.classList.remove('level-won-inverted', 'game-lost-inverted');
-      modalGameOverFooter.classList.add('game-won-inverted');
+      MODAL_GAME_OVER_HEADER.classList.remove('level-won-inverted', 'game-lost-inverted');
+      MODAL_GAME_OVER_HEADER.classList.add('game-won-inverted');
+      MODAL_GAME_OVER_FOOTER.classList.remove('level-won-inverted', 'game-lost-inverted');
+      MODAL_GAME_OVER_FOOTER.classList.add('game-won-inverted');
 
-      modalGameOverBody.classList.remove('level-won', 'game-lost');
-      modalGameOverBody.classList.add('game-won');
-      modalRestartButton.classList.remove('level-won', 'game-lost');
-      modalRestartButton.classList.add('game-won');
-      modalNextLevelButton.classList.remove('level-won', 'game-lost');
-      modalNextLevelButton.classList.add('game-won');
+      MODAL_GAME_OVER_BODY.classList.remove('level-won', 'game-lost');
+      MODAL_GAME_OVER_BODY.classList.add('game-won');
+      MODAL_RESTART_BUTTON.classList.remove('level-won', 'game-lost');
+      MODAL_RESTART_BUTTON.classList.add('game-won');
+      MODAL_NEXT_LEVEL_BUTTON.classList.remove('level-won', 'game-lost');
+      MODAL_NEXT_LEVEL_BUTTON.classList.add('game-won');
     } else { // The user won only the level
-      modalOverlay.classList.remove('game-lost-overlay', 'game-won-overlay');
-      modalOverlay.classList.add('level-won-overlay');
+      MODAL_OVERLAY.classList.remove('game-lost-overlay', 'game-won-overlay');
+      MODAL_OVERLAY.classList.add('level-won-overlay');
 
-      modalGameOverHeader.classList.remove('game-lost-inverted', 'game-won-inverted');
-      modalGameOverHeader.classList.add('level-won-inverted');
-      modalGameOverFooter.classList.remove('game-lost-inverted', 'game-won-inverted');
-      modalGameOverFooter.classList.add('level-won-inverted');
+      MODAL_GAME_OVER_HEADER.classList.remove('game-lost-inverted', 'game-won-inverted');
+      MODAL_GAME_OVER_HEADER.classList.add('level-won-inverted');
+      MODAL_GAME_OVER_FOOTER.classList.remove('game-lost-inverted', 'game-won-inverted');
+      MODAL_GAME_OVER_FOOTER.classList.add('level-won-inverted');
 
-      modalGameOverBody.classList.remove('game-lost', 'game-won');
-      modalGameOverBody.classList.add('level-won');
-      modalRestartButton.classList.remove('game-lost', 'game-won');
-      modalRestartButton.classList.add('level-won');
-      modalNextLevelButton.classList.remove('game-lost', 'game-won');
-      modalNextLevelButton.classList.add('level-won');
+      MODAL_GAME_OVER_BODY.classList.remove('game-lost', 'game-won');
+      MODAL_GAME_OVER_BODY.classList.add('level-won');
+      MODAL_RESTART_BUTTON.classList.remove('game-lost', 'game-won');
+      MODAL_RESTART_BUTTON.classList.add('level-won');
+      MODAL_NEXT_LEVEL_BUTTON.classList.remove('game-lost', 'game-won');
+      MODAL_NEXT_LEVEL_BUTTON.classList.add('level-won');
     }
   } else { // The user lost the game
-    modalOverlay.classList.remove('level-won-overlay', 'game-won-overlay');
-    modalOverlay.classList.add('game-lost-overlay');
+    MODAL_OVERLAY.classList.remove('level-won-overlay', 'game-won-overlay');
+    MODAL_OVERLAY.classList.add('game-lost-overlay');
 
-    modalGameOverHeader.classList.remove('level-won-inverted', 'game-won-inverted');
-    modalGameOverHeader.classList.add('game-lost-inverted');
-    modalGameOverFooter.classList.remove('level-won-inverted', 'game-won-inverted');
-    modalGameOverFooter.classList.add('game-lost-inverted');
+    MODAL_GAME_OVER_HEADER.classList.remove('level-won-inverted', 'game-won-inverted');
+    MODAL_GAME_OVER_HEADER.classList.add('game-lost-inverted');
+    MODAL_GAME_OVER_FOOTER.classList.remove('level-won-inverted', 'game-won-inverted');
+    MODAL_GAME_OVER_FOOTER.classList.add('game-lost-inverted');
 
-    modalGameOverBody.classList.remove('level-won', 'game-won');
-    modalGameOverBody.classList.add('game-lost');
-    modalRestartButton.classList.remove('level-won', 'game-won');
-    modalRestartButton.classList.add('game-lost');
-    modalNextLevelButton.classList.remove('level-won', 'game-won');
-    modalNextLevelButton.classList.add('game-lost');
+    MODAL_GAME_OVER_BODY.classList.remove('level-won', 'game-won');
+    MODAL_GAME_OVER_BODY.classList.add('game-lost');
+    MODAL_RESTART_BUTTON.classList.remove('level-won', 'game-won');
+    MODAL_RESTART_BUTTON.classList.add('game-lost');
+    MODAL_NEXT_LEVEL_BUTTON.classList.remove('level-won', 'game-won');
+    MODAL_NEXT_LEVEL_BUTTON.classList.add('game-lost');
   }
 }
 
@@ -792,44 +792,44 @@ function updateGameOverModalContents() {
     // Check if the user won all the levels
     if (gameOverallWon == true) {
       // Change the game over title to the whole game was won
-      modalGameOverTitle.innerHTML = 'Congratulations! You won the game!';
+      MODAL_GAME_OVER_TITLE.innerHTML = 'Congratulations! You won the game!';
       // Hide the next level button
-      modalNextLevelButton.classList.add('hide');
+      MODAL_NEXT_LEVEL_BUTTON.classList.add('hide');
     }
     // Else if there are still more levels to complete
     else {
       // Change the game over title to the level was won
-      modalGameOverTitle.innerHTML = 'Congratulations! You beat this level!';
+      MODAL_GAME_OVER_TITLE.innerHTML = 'Congratulations! You beat this level!';
       // Show the next level button
-      modalNextLevelButton.classList.remove('hide');
+      MODAL_NEXT_LEVEL_BUTTON.classList.remove('hide');
     }
   }
   // Else if the user lost the level (and thus the lost the whole game)
   else {
     // Change the game over title to the whole game was lost
-    modalGameOverTitle.innerHTML = 'Boo! You lost the game!';
+    MODAL_GAME_OVER_TITLE.innerHTML = 'Boo! You lost the game!';
     // Hide the next level button
-    modalNextLevelButton.classList.add('hide');
+    MODAL_NEXT_LEVEL_BUTTON.classList.add('hide');
   }
 
   // Update the star counter
   // by cloning the star list in the game score panel section
   // If the level was lost, then empty all the stars
   if (gameLevelWon == false) {
-    starCounterIndex = removeAllStars(starList, starCounterIndex);
+    starCounterIndex = removeAllStars(STAR_LIST, starCounterIndex);
   }
   // Clone the star list in the score panel
-  const ulStarsCloned = starList.cloneNode(true);
+  const ulStarsCloned = STAR_LIST.cloneNode(true);
   // Empty the previous contents of the modal's star list
-  modalStarList.innerHTML = '';
+  MODAL_STAR_LIST.innerHTML = '';
   // Add the clones score panel's star list into the modal's star list container
-  modalStarList.appendChild(ulStarsCloned);
+  MODAL_STAR_LIST.appendChild(ulStarsCloned);
 
   // Update the moves counter
-  modalMovesCounterSpan.innerHTML = movesCounter;
+  MODAL_MOVES_COUNTER_SPAN.innerHTML = movesCounter;
 
   // Update the hints used span
-  modalHintsUsedSpan.innerHTML = hintCounter;
+  MODAL_HINTS_USED_SPAN.innerHTML = hintCounter;
 
   // Update the time taken span
   // Make sure that the countdown timer is set to zero and not a negative
@@ -838,11 +838,11 @@ function updateGameOverModalContents() {
     setCountdownTimerToZero();
   }
   // Find out how much time was remaining
-  const timeRemaining = countdownTimerSpan.innerHTML;
+  const timeRemaining = COUNTDOWN_TIMER_SPAN.innerHTML;
   // Find out how much time was used up
   const timeElapsed = Math.round(gameTimeLimit/1000 - timeRemaining);
   // Update the time taken span in the modal
-  modalTimeRemainingSpan.innerHTML = timeElapsed;
+  MODAL_TIME_REMAINING_SPAN.innerHTML = timeElapsed;
 }
 
 // Figure out if the game is over yet and if it has been won or not
@@ -865,7 +865,7 @@ function isTheGameOverAndWon(timeRemaining) {
       gameLevelWon = true;
       // If the last level was won,
       // then update the game overall won status and the reset game status
-      if (levelIndex == levelMaxIndex) {
+      if (levelIndex == LEVEL_MAX_INDEX) {
         gameOverallWon = true;
         resetGame = true;
       }
@@ -915,11 +915,11 @@ function changeDropdownSelectColor(dropdownSelector) {
 
 // Get the icon set array of icon classes based on the selected option
 // in the icon set dropdown
-function getIconSetArray(dropdownSelector, arraysOfIconSets) {
+function getIconSetArray(dropdownSelector, arraysOfIconArrays) {
   // Get the value of the selected option in the icon set dropdown
   const dropdownIconSetValue = getDropdownValue(dropdownSelector);
   // Get the corresponding array of icon classes based on this value
-  const arrayOfSymbols = arraysOfIconSets[dropdownIconSetValue];
+  const arrayOfSymbols = arraysOfIconArrays[dropdownIconSetValue];
 
   // Change the color of dropdown <select> based on the color of the
   // option selected
@@ -975,9 +975,9 @@ function restartGame() {
     doNotChangeLevel = false;
   }
   // Update the level displayed in the level span
-  updateLevelSpan(levelIndex, levelSpan);
+  updateLevelSpan(levelIndex, LEVEL_SPAN);
   // Get the difficulty setting
-  difficulty = getDifficultySetting(dropdownDifficultySelect);
+  difficulty = getDifficultySetting(DROPDOWN_DIFFICULTY_SELECT);
   // Update the size of the deck
   numOfCards = arrayOfLevelDeckSizes[levelIndex];
   // Update the game time limit
@@ -985,13 +985,13 @@ function restartGame() {
   // Reset the game has begun boolean
   gameHasBegun = false;
   // Reset the number of moves counter
-  movesCounter = resetMovesCounter(movesCounter, movesCounterSpan);
+  movesCounter = resetMovesCounter(movesCounter, MOVES_COUNTER_SPAN);
   // Reset the star list and the star counter index
-  starCounterIndex = resetStarList(starList);
+  starCounterIndex = resetStarList(STAR_LIST);
   // Regenerate the star boundaries array
   generateStarBoundaries(starBoundaryArray, numOfCards);
   // Regenerate the number of hints left
-  hintsLeftCounter = generateHintsLeft(hintsLeftCounter, hintsLeftSpan, numOfCards, difficulty);
+  hintsLeftCounter = generateHintsLeft(hintsLeftCounter, HINTS_LEFT_SPAN, numOfCards, difficulty);
   // Reset the hints used counter
   hintCounter = 0;
   // Hide all the hinted cards
@@ -1011,7 +1011,7 @@ function restartGame() {
   arrayOfOpenedCards = [];
   // Populate the array of symbols with the desired icon set based off the
   // selected option in the icon set dropdown
-  arrayOfPossibleSymbols = getIconSetArray(dropdownIconSetSelect, arraysOfIconSets);
+  arrayOfPossibleSymbols = getIconSetArray(DROPDOWN_ICON_SET_SELECT, ARRAYS_OF_ICON_SETS);
   // Create a new deck of cards and add this to the HTML
   updateHTMLWithNewCardDeck(numOfCards);
   // Resize the cards based on the level
@@ -1020,7 +1020,7 @@ function restartGame() {
 
 // Show/hide the game over modal
 function toggleModalGameOver() {
-  modalGameOver.classList.toggle('modal-show');
+  MODAL_GAME_OVER.classList.toggle('modal-show');
 }
 
 // Determine whether the game has begun
@@ -1045,7 +1045,7 @@ restartGame();
 // ------ Events ------ //
 // When the user clicks the restart button,
 // update the card deck HTML with a new card deck
-restartButton.addEventListener('click', function() {
+RESTART_BUTTON.addEventListener('click', function() {
   resetGame = true;
   restartGame();
 });
@@ -1053,13 +1053,13 @@ restartButton.addEventListener('click', function() {
 // When a card is clicked,
 // reveal this card and check if it matches any previously selected cards.
 // Otherwise hide the selected cards.
-cardDeck.addEventListener('click', function (event) {
+CARD_DECK.addEventListener('click', function (event) {
   processCardClick(event);
 });
 
 // When the user clicks on the restart button,
 // close the modal and restart the game
-modalRestartButton.addEventListener('click', function(){
+MODAL_RESTART_BUTTON.addEventListener('click', function(){
   toggleModalGameOver();
   resetGame = true;
   restartGame();
@@ -1068,7 +1068,7 @@ modalRestartButton.addEventListener('click', function(){
 // When the user clicks the next level button,
 // then close the modal, change the level settings, and restart the game
 // with these new settings
-modalNextLevelButton.addEventListener('click', function() {
+MODAL_NEXT_LEVEL_BUTTON.addEventListener('click', function() {
   toggleModalGameOver();
   resetGame = false;
   restartGame();
@@ -1076,7 +1076,7 @@ modalNextLevelButton.addEventListener('click', function() {
 
 // When the user clicks on the hint button,
 // then reveal two matching cards
-hintButton.addEventListener('click', function() {
+HINT_BUTTON.addEventListener('click', function() {
   // Find and reveal two matching cards
   findCardMatch();
   // If the game has not yet begun, then change this status and start the
@@ -1087,7 +1087,7 @@ hintButton.addEventListener('click', function() {
 // When the user selects an icon set in the corresponding dropdown,
 // restart the game at the current level with cards with the desired set of icons
 // only if the icon set currently chosen is different from the previous choice
-dropdownIconSetSelect.addEventListener('change', function() {
+DROPDOWN_ICON_SET_SELECT.addEventListener('change', function() {
   resetGame = false;
   doNotChangeLevel = true;
   restartGame();
@@ -1096,7 +1096,7 @@ dropdownIconSetSelect.addEventListener('change', function() {
 // When the user selects a difficulty setting in the corresponding dropdown,
 // restart the game with this difficulty at level 0 only if the setting currently
 // chosen is different from the previous choice
-dropdownDifficultySelect.addEventListener('change', function() {
+DROPDOWN_DIFFICULTY_SELECT.addEventListener('change', function() {
   resetGame = true;
   doNotChangeLevel = false;
   restartGame();
