@@ -9,6 +9,7 @@ html {
   box-sizing: inherit;
 }
 
+
 /*
  * Typography
  */
@@ -26,7 +27,11 @@ body {
   font: 600 1em/1.25 'Montserrat', Verdana, sans-serif;
   color: #987f64;
   /* Background pattern from Subtle Patterns */
-  background: #fff url('../img/xv.png');
+  background: #fff url(../img/xv.png);
+}
+
+select {
+  font: inherit;
 }
 
 select option {
@@ -125,9 +130,6 @@ blockquote {
   }
 }
 
-select {
-  font: inherit;
-}
 
 /*
  * Styles for page layout
@@ -209,41 +211,34 @@ body {
     justify-content: flex-start;
   }
 
-  .score-panel div,
-  .score-panel ul,
-  .options-panel button,
-  .options-panel select {
+  .panel-element {
     width: 40%;
-  }
-
-  .score-panel div,
-  .score-panel ul,
-  .options-panel button {
     margin-bottom: 10px;
   }
 
-  select.difficulty,
+  .dropdown {
+    margin-bottom: 0;
+    min-height: 48px;
+  }
+
+  .difficulty,
   .level-div {
     order: 0;
   }
 
-  select.icon-set,
+  .icon-set,
   .countdown-div {
     order: 1;
   }
 
-  button.restart,
+  .restart,
   .score-panel .stars {
     order: 2;
   }
 
-  button.hint,
+  .hint,
   .moves-div {
     order: 3;
-  }
-
-  select {
-    min-height: 48px;
   }
 
   header {
@@ -262,6 +257,7 @@ body {
   }
 }
 
+
 /*
  * Styles for the Score and Options Panels
  */
@@ -272,28 +268,28 @@ body {
   font: inherit;
 }
 
-button {
+.restart,
+.hint {
   color: #987f64;
 }
 
-select {
+.dropdown {
   color: #987f64;
   border: 1px solid #987f64;
 }
 
 @media screen and (max-width: 728px) {
   button,
-  select {
+  .dropdown {
     min-width: 48px;
     min-height: 48px;
   }
 }
 
 .stars {
-  margin: 0;
+  margin: 0 5px 0 0;
   padding: 0;
   display: inline-block;
-  margin: 0 5px 0 0;
 }
 
 .stars li {
@@ -317,6 +313,7 @@ select {
 .hard {
   color: #e8757d;
 }
+
 
 /*
  * Styles for the deck of cards
@@ -344,10 +341,11 @@ select {
 }
 
 .deck .card.match {
-  cursor: default;
   background: #75b6e8;
+  cursor: default;
   font-size: 33px;
 }
+
 
 /*
  * Styles for the Game Over Modal
@@ -488,6 +486,7 @@ select {
   margin: 0 auto;
 }
 
+
 /*
  * Color classes for different modal states
  */
@@ -536,6 +535,7 @@ select {
   color: #fff;
 }
 
+
 /*
  * Flexbox helper classes
  */
@@ -583,6 +583,7 @@ select {
   -ms-flex-item-align: end;
   align-self: flex-end;
 }
+
 
 /* Hide an element */
 .hide {
