@@ -594,6 +594,55 @@ function setCountdownTimerToZero() {
   countdownTimerSpan.innerHTML = 0;
 }
 
+// When a card is clicked,
+// reveal this card and check if it matches any previously selected cards.
+// Otherwise hide the selected cards.
+function processCardClick(event) {
+  // Save the selected target
+  const clickedCard = event.target;
+  // Make sure that the selected targest was actually a card li
+  // and not the deck ul
+  // Also make sure that the clicked card hasn't already been matched
+  // and that not more than two unmatched cards are opened at a given time
+  if (clickedCard.nodeName.toUpperCase() == 'LI' && clickedCard.classList.contains('match') == false &&  arrayOfOpenedCards.length < 2 && gameOver == false) {
+    // If the game has not yet begun, then change this status and start the
+    // countdown timer
+    determineAndBeginGame();
+
+    // Hide all hinted cards
+    hideHintedCards();
+
+    // Reveal the currently selected card and add it to the array of opened cards
+    // if the array of opened cards is empty OR
+    // if the array is not empty AND
+    // the previously selected cards is not the currently selected card
+    if (arrayOfOpenedCards.length == 0 || clickedCard != arrayOfOpenedCards[0]) {
+      // Display the selected card's symbol
+      revealCard(clickedCard, arrayOfOpenedCards);
+    }
+
+    // If the arrray of opened cards already has another card in it,
+    // then check if the clicked card matches the other card in the array
+    if (arrayOfOpenedCards.length > 1) {
+      // Update the number of moves counter
+      movesCounter = updateMovesCounter(movesCounter, movesCounterSpan);
+      // Update the star list
+      starCounterIndex = updateStarList(starBoundaryArray, movesCounter, starList, starCounterIndex, hintCounter);
+      // If the two cards match,
+      // then lock the matched cards
+      if (clickedCard.innerHTML == arrayOfOpenedCards[0].innerHTML) {
+        lockMatchedCards(clickedCard, arrayOfOpenedCards[0], arrayOfOpenedCards);
+        numOfMatchesMade++;
+      }
+      // Otherwise, if there is no match,
+      // then hide and remove these cards from the array of opened cards
+      else {
+        hideAndRemoveOpenedCards(clickedCard, arrayOfOpenedCards[0], arrayOfOpenedCards)
+      }
+    }
+  }
+}
+
 // Change the sizes of the cards based on the number of cards being displayed
 // i.e. based on the current level
 function changeCardSizesBasedOnLevel(level) {
@@ -1005,49 +1054,7 @@ restartButton.addEventListener('click', function() {
 // reveal this card and check if it matches any previously selected cards.
 // Otherwise hide the selected cards.
 cardDeck.addEventListener('click', function (event) {
-  // Save the selected target
-  const clickedCard = event.target;
-  // Make sure that the selected targest was actually a card li
-  // and not the deck ul
-  // Also make sure that the clicked card hasn't already been matched
-  // and that not more than two unmatched cards are opened at a given time
-  if (clickedCard.nodeName.toUpperCase() == 'LI' && clickedCard.classList.contains('match') == false &&  arrayOfOpenedCards.length < 2 && gameOver == false) {
-    // If the game has not yet begun, then change this status and start the
-    // countdown timer
-    determineAndBeginGame();
-
-    // Hide all hinted cards
-    hideHintedCards();
-
-    // Reveal the currently selected card and add it to the array of opened cards
-    // if the array of opened cards is empty OR
-    // if the array is not empty AND
-    // the previously selected cards is not the currently selected card
-    if (arrayOfOpenedCards.length == 0 || clickedCard != arrayOfOpenedCards[0]) {
-      // Display the selected card's symbol
-      revealCard(clickedCard, arrayOfOpenedCards);
-    }
-
-    // If the arrray of opened cards already has another card in it,
-    // then check if the clicked card matches the other card in the array
-    if (arrayOfOpenedCards.length > 1) {
-      // Update the number of moves counter
-      movesCounter = updateMovesCounter(movesCounter, movesCounterSpan);
-      // Update the star list
-      starCounterIndex = updateStarList(starBoundaryArray, movesCounter, starList, starCounterIndex, hintCounter);
-      // If the two cards match,
-      // then lock the matched cards
-      if (clickedCard.innerHTML == arrayOfOpenedCards[0].innerHTML) {
-        lockMatchedCards(clickedCard, arrayOfOpenedCards[0], arrayOfOpenedCards);
-        numOfMatchesMade++;
-      }
-      // Otherwise, if there is no match,
-      // then hide and remove these cards from the array of opened cards
-      else {
-        hideAndRemoveOpenedCards(clickedCard, arrayOfOpenedCards[0], arrayOfOpenedCards)
-      }
-    }
-  }
+  processCardClick(event);
 });
 
 // When the user clicks on the restart button,
