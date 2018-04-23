@@ -669,7 +669,7 @@ function changeCardSizesBasedOnLevel(level) {
   // The deckHeight is 100vh - (the vertical padding and margin + the height of
   // all the other elements on the screen above the deck depending on the layout)
   // Landscape mode
-  if (window.innerWidth < 769 && window.innerWidth > window.innerHeight) {
+  if (window.innerHeight < 470 && window.innerWidth > window.innerHeight) {
     deckWidth = window.innerWidth - (deckPaddingX*2 + deckMarginX*2 + leftHalfSectionWidth);
     deckHeight = window.innerHeight - (deckPaddingY*2 + deckMarginY);
   }
