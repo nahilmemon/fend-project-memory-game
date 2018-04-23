@@ -115,44 +115,44 @@ const MODAL_GAME_OVER_FOOTER = MODAL_GAME_OVER.querySelector('.modal-footer');
 // --- Animation Helpers --- //
 // Keyframes
 let keyframesFlipCardOpen = [
-  { transform: 'rotateY(180deg)', background: CARD_BACK_COLOR, fontSize: '0' },
-  { background: CARD_BACK_COLOR, fontSize: '0', offset: 0.5 },
-  { background: CARD_FRONT_COLOR, fontSize: '33px', offset: 0.50001 },
-  { transform: 'rotateY(0deg)', background: CARD_FRONT_COLOR, fontSize: '33px' }
+  {transform: 'rotateY(180deg)', background: CARD_BACK_COLOR, fontSize: '0'},
+  {background: CARD_BACK_COLOR, fontSize: '0', offset: 0.5},
+  {background: CARD_FRONT_COLOR, fontSize: '33px', offset: 0.50001},
+  {transform: 'rotateY(0deg)', background: CARD_FRONT_COLOR, fontSize: '33px'}
 ];
 let keyframesFlipCardClose = [
-  { transform: 'rotateY(0deg)', background: CARD_FRONT_COLOR, fontSize: '33px' },
-  { background: CARD_FRONT_COLOR, fontSize: '33px', offset: 0.5 },
-  { background: CARD_BACK_COLOR, fontSize: '0', offset: 0.50001 },
-  { transform: 'rotateY(180deg)', background: CARD_BACK_COLOR, fontSize: '0' }
+  {transform: 'rotateY(0deg)', background: CARD_FRONT_COLOR, fontSize: '33px'},
+  {background: CARD_FRONT_COLOR, fontSize: '33px', offset: 0.5},
+  {background: CARD_BACK_COLOR, fontSize: '0', offset: 0.50001},
+  {transform: 'rotateY(180deg)', background: CARD_BACK_COLOR, fontSize: '0'}
 ];
 // The following two keyframe details have been taken from
 // http://www.theappguruz.com/tag-tools/web/CSSAnimations/
 const KEYFRAMES_MATCH = [
- { transform: 'scale3d(1, 1, 1)', background: CARD_FRONT_COLOR },
- { transform: 'scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg)', offset: 0.1 },
- { transform: 'scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg)', offset: 0.2 },
- { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.3 },
- { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg)', offset: 0.4 },
- { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.5 },
- { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg)', offset: 0.6 },
- { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.7 },
- { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg)', offset: 0.8 },
- { transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.9 },
- { transform: 'scale3d(1, 1, 1)', background: CARD_MATCH_COLOR }
+ {transform: 'scale3d(1, 1, 1)', background: CARD_FRONT_COLOR },
+ {transform: 'scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg)', offset: 0.1},
+ {transform: 'scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg)', offset: 0.2},
+ {transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.3},
+ {transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg)', offset: 0.4},
+ {transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.5},
+ {transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg)', offset: 0.6},
+ {transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.7},
+ {transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg)', offset: 0.8},
+ {transform: 'scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)', offset: 0.9},
+ {transform: 'scale3d(1, 1, 1)', background: CARD_MATCH_COLOR}
 ];
 const KEYFRAMES_HINT = [
- { transform: 'translate3d(0, 0, 0)', background: CARD_BACK_COLOR },
- { transform: 'translate3d(-10px, 0, 0)', offset: 0.1 },
- { transform: 'translate3d(10px, 0, 0)', offset: 0.2 },
- { transform: 'translate3d(-10px, 0, 0)', offset: 0.3 },
- { transform: 'translate3d(10px, 0, 0)', offset: 0.4 },
- { transform: 'translate3d(-10px, 0, 0)', background: CARD_HINT_COLOR, offset: 0.5 },
- { transform: 'translate3d(10px, 0, 0)', offset: 0.6 },
- { transform: 'translate3d(-10px, 0, 0)', offset: 0.7 },
- { transform: 'translate3d(10px, 0, 0)', offset: 0.8 },
- { transform: 'translate3d(-10px, 0, 0)', offset: 0.9 },
- { transform: 'translate3d(0, 0, 0)', background: CARD_BACK_COLOR }
+ {transform: 'translate3d(0, 0, 0)', background: CARD_BACK_COLOR},
+ {transform: 'translate3d(-10px, 0, 0)', offset: 0.1},
+ {transform: 'translate3d(10px, 0, 0)', offset: 0.2},
+ {transform: 'translate3d(-10px, 0, 0)', offset: 0.3},
+ {transform: 'translate3d(10px, 0, 0)', offset: 0.4},
+ {transform: 'translate3d(-10px, 0, 0)', background: CARD_HINT_COLOR, offset: 0.5},
+ {transform: 'translate3d(10px, 0, 0)', offset: 0.6},
+ {transform: 'translate3d(-10px, 0, 0)', offset: 0.7},
+ {transform: 'translate3d(10px, 0, 0)', offset: 0.8},
+ {transform: 'translate3d(-10px, 0, 0)', offset: 0.9},
+ {transform: 'translate3d(0, 0, 0)', background: CARD_BACK_COLOR}
 ];
 // Timing
 const TIMING_SHOW_HINT = {
@@ -724,8 +724,8 @@ function changeCardSizesBasedOnLevel(level) {
   // (If you simply use .setAttribute or .style.fontSize, then this will
   // override all subsequent animations, such as the card flipping close.)
   const keyframesResizeCardFontSize = [
-    { fontSize: prevIconFontSize },
-    { fontSize: iconFontSize }
+    {fontSize: prevIconFontSize},
+    {fontSize: iconFontSize}
   ];
   const timingResizeCardFontSize = {
     duration: 1,
