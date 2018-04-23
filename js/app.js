@@ -710,17 +710,45 @@ function changeCardSizesBasedOnLevel(level) {
 
   // Change the font size of the icons based on the current size of the cards
   // and the number of cards on screen (i.e. the current level)
+  // Get the previous font size
+  const prevIconFontSize = keyframesFlipCardOpen[2].fontSize;
+  // Calculate the new font size
   let iconFontSize;
   if (level < 3) {
-    iconFontSize = cardWidth * 0.5;
+    iconFontSize = `${cardWidth * 0.5}px`;
   } else {
-    iconFontSize = cardWidth * 0.7;
+    iconFontSize = `${cardWidth * 0.7}px`;
+  }
+  // Use the Web Animations API to resize the font size in such a way that
+  // other animations won't be overridden by this current step.
+  // (If you simply use .setAttribute or .style.fontSize, then this will
+  // override all subsequent animations, such as the card flipping close.)
+  const keyframesResizeCardFontSize = [
+    { fontSize: prevIconFontSize },
+    { fontSize: iconFontSize }
+  ];
+  const timingResizeCardFontSize = {
+    duration: 1,
+    fill: 'both'
+  }
+  // Iterate through all the cards in the deck. Only animate the cards
+  // that are currently open or matched (i.e. cards with icons currently
+  // on display)
+  for (let i=0; i<cards.length; i++) {
+    if (cards[i].classList.contains('open') || cards[i].classList.contains('match')) {
+      // Animate the given card to resize the card icon's font size
+      let cardResizingPlayer = cards[i].animate(
+        keyframesResizeCardFontSize,
+        timingResizeCardFontSize
+      );
+    }
   }
   // Update the card opening and closing keyframes with the new icon font size
-  keyframesFlipCardOpen[2].fontSize = `${iconFontSize}px`;
-  keyframesFlipCardOpen[3].fontSize = `${iconFontSize}px`;
-  keyframesFlipCardClose[0].fontSize = `${iconFontSize}px`;
-  keyframesFlipCardClose[1].fontSize = `${iconFontSize}px`;
+  // for subsequent animations to match up with the new calculations
+  keyframesFlipCardOpen[2].fontSize = iconFontSize;
+  keyframesFlipCardOpen[3].fontSize = iconFontSize;
+  keyframesFlipCardClose[0].fontSize = iconFontSize;
+  keyframesFlipCardClose[1].fontSize = iconFontSize;
 }
 
 // Change the color palette of the game over modal based on whether the user
