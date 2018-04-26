@@ -13,11 +13,11 @@ let gameOverallWon = false; // status of whether all levels have been won
 let numOfMatchesMade = 0;
 let levelIndex = 0;
 let difficulty = 0; // 0: easy, 1: medium, 2: hard
-let arrayOfLevelDeckSizes = [4, 8, 16, 24, 36]; // square number or square number - 1
+let arrayOfLevelDeckSizes = [16, 24, 36]; // square number or square number - 1
 let arraysOfLevelTimeLimits = [
-  [12000, 30000, 55000, 90000, 200000],
-  [9000, 22000, 39000, 75000, 130000],
-  [6000, 13000, 29000, 55000, 100000]
+  [55000, 90000, 200000],
+  [39000, 75000, 130000],
+  [29000, 55000, 100000]
 ]; // in units of ms
 const LEVEL_MAX_INDEX = arrayOfLevelDeckSizes.length - 1;
 let numOfCards = arrayOfLevelDeckSizes[levelIndex];
@@ -652,7 +652,7 @@ function changeCardSizesBasedOnLevel(level) {
   let deckWidth, deckHeight, deckPaddingX, deckPaddingY;
   // Change the padding of the deck based on the number of cards since the match
   // animation takes up a lot of space for larger sized cards
-  if (level < 3) {
+  if (level == 0) {
     deckPaddingX = 20; // horizontal padding
     deckPaddingY = 20; // vertical padding
   } else {
@@ -689,7 +689,7 @@ function changeCardSizesBasedOnLevel(level) {
 
   // Calculate the card size (the cards should also be squares)
   let cardWidth, cardHeight;
-  const numOfCardsPerRow = level + 2;
+  const numOfCardsPerRow = level + 4;
   // The space between each card should be 2.5% of the deck's size
   // So the total space is this multiplied by the number of cards per row
   const totalSpacingBetweenCardsPerRow = 0.025 * deckWidth * numOfCardsPerRow;
@@ -714,7 +714,7 @@ function changeCardSizesBasedOnLevel(level) {
   const prevIconFontSize = keyframesFlipCardOpen[2].fontSize;
   // Calculate the new font size
   let iconFontSize;
-  if (level < 3) {
+  if (level == 0) {
     iconFontSize = `${cardWidth * 0.5}px`;
   } else {
     iconFontSize = `${cardWidth * 0.7}px`;
