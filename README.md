@@ -3,6 +3,7 @@
 ## Table of Contents
 
 * [Description](#description)
+* [How to Run the Web App](#how-to-run-the-web-app)
 * [Basic Gameplay Mechanics](#basic-gameplay-mechanics)
 * [Minimum Requirements](#minimum-requirements)
 * [Extra Features](#extra-features)
@@ -12,6 +13,10 @@
 ## Description
 
 This is a browser-based memory card matching game (aka Concentration, Memory Game, or Match Up). This project was forked from a very basic, static [starter template](https://github.com/udacity/fend-project-memory-game). Using HTML, CSS, and JS, the project was developed to become interactive, usable across various device sizes and orientations, and many new features were added as well.
+
+## How to Run the Web App
+
+Go [here](https://nahilmemon.github.io/memory-game/index.html) to view the app in your browser.
 
 ## Basic Gameplay Mechanics
 
